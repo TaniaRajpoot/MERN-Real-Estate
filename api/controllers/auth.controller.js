@@ -1,15 +1,18 @@
 import User from "../models/user.model.js";
-import bycryptjs from 'bcryptjs'
+import bcryptjs from 'bcryptjs'; // also fix spelling if needed
+import { errorHandler } from "../utilis/error.js";
 
-export const signup = async (req,res)=>{
+export const signup = async (req, res, next) => {
+  const { username, email, password } = req.body;
 
-  const {username, email,password} = req.body;
-  const hashPasswrod = bycryptjs.hashSync(password,10);
-  const newUser = new User ({username, email,password:hashPasswrod});
   try {
-      await newUser.save();
-      res.status(201).json("user created successfully ");
+    const hashedPassword = bcryptjs.hashSync(password, 10);
+    const newUser = new User({ username, email, password: hashedPassword });
+
+    await newUser.save();
+    res.status(201).json({ message: "User created successfully" });
+
   } catch (error) {
-    res.status(500).json(error.message);
-  }
+   next(error);
+}
 };
