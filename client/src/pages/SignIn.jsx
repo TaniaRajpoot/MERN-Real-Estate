@@ -17,30 +17,32 @@ export default function SignIn() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    dispatch(signInStart()); // ✅ Fix: call the function
+  e.preventDefault();
+  dispatch(signInStart());
 
-    try {
-      const res = await fetch('/api/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+  try {
+    const res = await fetch('/api/auth/signin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
 
-      const data = await res.json();
-      if (data.success === false) {
-        dispatch(signInFaliure(data.message));
-        return;
-      }
+    const data = await res.json();
+    console.log('✅ Backend Response:', data); // ADD THIS
 
-      dispatch(signInSuccess(data));
-      navigate('/');
-    } catch (error) {
-      dispatch(signInFaliure(error.message));
+    if (data.success === false) {
+      dispatch(signInFaliure(data.message));
+      return;
     }
-  };
+
+    dispatch(signInSuccess(data));
+    navigate('/');
+  } catch (error) {
+    dispatch(signInFaliure(error.message));
+  }
+};
 
   return (
     <div className='p-3 max-w-lg mx-auto'>
