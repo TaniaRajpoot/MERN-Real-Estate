@@ -63,8 +63,18 @@ export const google = async (req, res, next) => {
     let user = await User.findOne({ email });
 
     if (user) {
+      // ✅ Update avatar if it's missing or still default
+      if (
+        !user.avatar ||
+        user.avatar === 'https://pixabay.com/vectors/blank-profile-picture-mystery-man-973460/'
+      ) {
+        user.avatar = photo;
+        await user.save(); // Save updated avatar
+      }
+
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
       const { password: pass, ...rest } = user._doc;
+
       return res
         .cookie('access_token', token, {
           httpOnly: true,
@@ -82,7 +92,7 @@ export const google = async (req, res, next) => {
         username: name.split(' ').join('').toLowerCase() + Math.floor(Math.random() * 10000),
         email,
         password: hashedPassword,
-        avatar: photo,
+        avatar: photo, // ✅ Save Google avatar
         fromGoogle: true,
       });
 
@@ -103,4 +113,4 @@ export const google = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}
+};
