@@ -55,3 +55,52 @@ export const signin = async (req, res, next) => {
     next(error);
   }
 };
+
+export const google = async (req, res, next) => {
+  try {
+    const { email, name, photo } = req.body;
+
+    let user = await User.findOne({ email });
+
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+      const { password: pass, ...rest } = user._doc;
+      return res
+        .cookie('access_token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+        })
+        .status(200)
+        .json({ success: true, ...rest });
+    } else {
+      // Create a random password for Google users
+      const generatedPassword = Math.random().toString(36).slice(-8);
+      const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+
+      const newUser = new User({
+        username: name.split(' ').join('').toLowerCase() + Math.floor(Math.random() * 10000),
+        email,
+        password: hashedPassword,
+        avatar: photo,
+        fromGoogle: true,
+      });
+
+      await newUser.save();
+
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+      const { password: pass, ...rest } = newUser._doc;
+
+      return res
+        .cookie('access_token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+        })
+        .status(201)
+        .json({ success: true, ...rest });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
