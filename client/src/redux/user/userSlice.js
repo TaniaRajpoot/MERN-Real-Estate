@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  currentUser: null,  // ✅ should be 'currentUser' not 'current'
+  currentUser: null,
   error: null,
   loading: false,
 };
@@ -14,7 +14,7 @@ const userSlice = createSlice({
       state.loading = true;
     },
     signInSuccess: (state, action) => {
-      state.currentUser = action.payload; // ✅ update correct key
+      state.currentUser = action.payload;
       state.loading = false;
       state.error = null;
     },
@@ -22,11 +22,15 @@ const userSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    // New reducer to update avatar
+    updateUserAvatar: (state, action) => {
+      if(state.currentUser) {
+        state.currentUser.avatar = action.payload;  // payload = new avatar URL
+      }
+    },
   },
 });
 
-// ✅ Export actions
-export const { signInStart, signInFaliure, signInSuccess } = userSlice.actions;
+export const { signInStart, signInFaliure, signInSuccess, updateUserAvatar } = userSlice.actions;
 
-// ✅ Export reducer
 export default userSlice.reducer;
