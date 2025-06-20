@@ -28,9 +28,62 @@ const userSlice = createSlice({
         state.currentUser.avatar = action.payload;  // payload = new avatar URL
       }
     },
+    updateUserStart:(state)=>{
+      state.loading = true;
+
+    },
+    updateUserScuccess:(state,action) =>{
+      state.currentUser = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    updateUserFailure:(state,action) =>{
+      state.error = action.payload;
+      state.loading = false;
+    },
+    deleteUserStart:(state) =>{
+      state.loading= true;
+    },
+    deleteUserSuccess:(state) => {
+      state.currentUser = null;
+      state.loading = false;
+      state.error = null;
+
+    },
+    deleteUserFailure:(state,action) =>{
+      state.payload = action.payload;
+      state.loading = false;
+    },
+    signOutUserStart:(state) =>{
+      state.loading= true;
+    },
+    signOutUserSuccess:(state) => {
+      state.currentUser = null;
+      state.loading = false;
+      state.error = null;
+
+    },
+    signOutUserFailure:(state,action) =>{
+      state.payload = action.payload;
+      state.loading = false;
+    },
   },
 });
 
-export const { signInStart, signInFaliure, signInSuccess, updateUserAvatar } = userSlice.actions;
+export const {
+  signInStart,
+  signInFaliure,
+  signInSuccess,
+  updateUserAvatar ,
+  updateUserFailure,
+  updateUserStart,
+  updateUserScuccess,
+  deleteUserFailure,
+  deleteUserSuccess,
+  deleteUserStart,
+  signOutUserFailure,
+  signOutUserStart,
+  signOutUserSuccess,
+} = userSlice.actions;
 
 export default userSlice.reducer;
