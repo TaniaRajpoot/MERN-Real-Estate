@@ -36,7 +36,7 @@ export default function Header() {
     <div className='flex justify-between items-center max-w-6xl mx-auto p-3'>
     <Link to ='/' >
     <h1 className='font-bold text-sm sm:text-xl flex-wrap'>     
-        <span className='text-slate-500'>Tania's </span>
+        <span className='text-slate-500'>Taniva </span>
         <span className='text-slate-700'>Estate</span>
     </h1>
     </Link>
@@ -63,10 +63,17 @@ export default function Header() {
       <Link to={currentUser ? '/profile' : '/sign-in'}>
   {currentUser ? (
     <img
-      src={currentUser.avatar}
-      alt='profile'
-      className='w-8 h-8 rounded-full object-cover'
-    />
+  src={
+    currentUser?.avatar?.trim()
+      ? currentUser.avatar
+      : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+  }
+  onError={(e) => {
+    e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+  }}
+  alt='profile'
+  className='w-8 h-8 rounded-full object-cover'
+/>
   ) : (
     <li className='text-slate-700 hover:underline'>Sign in</li>
   )}

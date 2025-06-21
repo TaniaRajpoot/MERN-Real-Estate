@@ -191,37 +191,38 @@ const handleSubmit = async (e) => {
             ))}
           </div>
 
-          {/* Number Inputs */}
-          <div className="flex flex-wrap gap-6">
-            {['bedrooms', 'bathrooms', 'regularPrice', 'discountPrice'].map((id) => (
-              <div key={id} className="flex items-center gap-2">
-                <input
-                  type="number"
-                  id={id}
-                  min="10"
-                  max="10000"
-                  value={formData[id]}
-                  onChange={handleChange}
-                  className="p-3 border border-grey-300 rounded-lg"
-                  required
-                />
-                <div>
-                  <p>
-                    {id === 'bedrooms'
-                      ? 'Beds'
-                      : id === 'bathrooms'
-                      ? 'Baths'
-                      : id === 'regularPrice'
-                      ? 'Regular Price'
-                      : 'Discounted Price'}
-                  </p>
-                  {(id === 'regularPrice' || id === 'discountPrice') && (
-                    <span className="text-xs">($ / month)</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+       {/* Number Inputs */}
+<div className="flex flex-wrap gap-6">
+  {['bedrooms', 'bathrooms', 'regularPrice', 'discountPrice'].map((id) => (
+    <div key={id} className="flex items-center gap-2">
+      <input
+        type="number"
+        id={id}
+        min={id === 'regularPrice' || id === 'discountPrice' ? 10 : 1}
+        max="100000"
+        value={formData[id]}
+        onChange={handleChange}
+        className="p-3 border border-grey-300 rounded-lg"
+        required
+      />
+      <div>
+        <p>
+          {id === 'bedrooms'
+            ? 'Beds'
+            : id === 'bathrooms'
+            ? 'Baths'
+            : id === 'regularPrice'
+            ? 'Regular Price'
+            : 'Discounted Price'}
+        </p>
+        {(id === 'regularPrice' || id === 'discountPrice') && (
+          <span className="text-xs">($ / month)</span>
+        )}
+      </div>
+    </div>
+  ))}
+</div>
+
         </div>
 
         {/* RIGHT SIDE */}
