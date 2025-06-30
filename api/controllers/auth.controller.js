@@ -43,7 +43,7 @@ export const signin = async (req, res, next) => {
     const { password: pass, ...rest } = validUser._doc;
 
     res
-      .cookie('access_token', token, {
+      .cookie('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
@@ -56,27 +56,29 @@ export const signin = async (req, res, next) => {
   }
 };
 
+// GOOGLE AUTH Controller
 export const google = async (req, res, next) => {
   try {
     const { email, name, photo } = req.body;
 
     let user = await User.findOne({ email });
 
+    const token = jwt.sign({ id: user?._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
     if (user) {
-      // ✅ Update avatar if it's missing or still default
+      // Update avatar if missing or default
       if (
         !user.avatar ||
         user.avatar === 'https://pixabay.com/vectors/blank-profile-picture-mystery-man-973460/'
       ) {
         user.avatar = photo;
-        await user.save(); // Save updated avatar
+        await user.save();
       }
 
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
       const { password: pass, ...rest } = user._doc;
 
       return res
-        .cookie('access_token', token, {
+        .cookie('token', token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'strict',
@@ -84,7 +86,7 @@ export const google = async (req, res, next) => {
         .status(200)
         .json({ success: true, ...rest });
     } else {
-      // Create a random password for Google users
+      // Create new user from Google
       const generatedPassword = Math.random().toString(36).slice(-8);
       const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
 
@@ -92,17 +94,16 @@ export const google = async (req, res, next) => {
         username: name.split(' ').join('').toLowerCase() + Math.floor(Math.random() * 10000),
         email,
         password: hashedPassword,
-        avatar: photo, // ✅ Save Google avatar
+        avatar: photo,
         fromGoogle: true,
       });
 
       await newUser.save();
 
-      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
       const { password: pass, ...rest } = newUser._doc;
 
       return res
-        .cookie('access_token', token, {
+        .cookie('token', token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'strict',
@@ -115,9 +116,10 @@ export const google = async (req, res, next) => {
   }
 };
 
+// SIGN OUT Controller
 export const signout = async (req, res, next) => {
   try {
-    res.clearCookie('access_token');
+    res.clearCookie('token');
     res.status(200).json({ success: true, message: 'User has been logged out' });
   } catch (error) {
     next(error);

@@ -1,30 +1,28 @@
 import React, { useState } from 'react';
-// import { getDatabase, ref, set } from 'firebase/database';
-// import { app } from '../firebase'; // Your Firebase config
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+
 export default function CreateListing() {
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: '',
     description: '',
     address: '',
-    type: '', // either 'sale' or 'rent'
+    type: '',
     bedrooms: 1,
     bathrooms: 1,
-    regularPrice: 50,
+    regularPrice: 500,
     discountPrice: 0,
     offer: false,
     parking: false,
     furnished: false,
   });
 
-
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
-console.log(formData);
+
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -50,7 +48,7 @@ console.log(formData);
         imageUrls: [...prev.imageUrls, ...urls],
       }));
     } catch (err) {
-      setUploadError('Image upload failed. Try again.',err.message);
+      setUploadError('Image upload failed. Try again.', err.message);
     }
 
     setUploading(false);
@@ -59,8 +57,8 @@ console.log(formData);
   const uploadToCloudinary = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', 'unsigned_preset'); // Replace with your preset
-    formData.append('cloud_name', 'dpvjlm1wi'); // Replace with your cloud name
+    formData.append('upload_preset', 'unsigned_preset');
+    formData.append('cloud_name', 'dpvjlm1wi');
 
     const res = await fetch('https://api.cloudinary.com/v1_1/dpvjlm1wi/image/upload', {
       method: 'POST',
@@ -77,44 +75,40 @@ console.log(formData);
       imageUrls: prev.imageUrls.filter((img) => img !== url),
     }));
   };
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!formData.type) {
-    alert('Please select Sale or Rent');
-    return;
-  }
 
-  setSaving(true);
-
-  try {
-    // Replace with your actual backend URL
-    const res = await fetch('http://localhost:3000/api/listing/create', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  credentials: 'include', // ✅ this sends your cookie!
-  body: JSON.stringify(formData),
-});
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.message || 'Failed to create listing');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.type) {
+      alert('Please select Sale or Rent');
+      return;
     }
 
-    const data = await res.json();
+    setSaving(true);
 
-    alert('Listing created successfully!');
-    navigate(`/listing/${data._id}`)
+    try {
+      const res = await fetch('http://localhost:3000/api/listing/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(formData),
+      });
 
-    // Optionally clear form or redirect user here
-  } catch (error) {
-    alert('Failed to create listing: ' + error.message);
-  }
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Failed to create listing');
+      }
 
-  setSaving(false);
-};
+      const data = await res.json();
+      alert('Listing created successfully!');
+      navigate(`/listing/${data._id}`);
+    } catch (error) {
+      alert('Failed to create listing: ' + error.message);
+    }
 
+    setSaving(false);
+  };
 
   return (
     <main className="p-3 max-w-4xl mx-auto">
@@ -150,7 +144,6 @@ const handleSubmit = async (e) => {
             required
           />
 
-          {/* ✅ SALE/RENT Styled Like Checkboxes - Only One Clickable */}
           <div className="flex gap-6 flex-wrap">
             <label className="flex items-center gap-2">
               <input
@@ -181,7 +174,6 @@ const handleSubmit = async (e) => {
             </label>
           </div>
 
-          {/* Other Checkboxes */}
           <div className="flex gap-6 flex-wrap">
             {['parking', 'furnished', 'offer'].map((id) => (
               <label key={id} className="flex items-center gap-2">
@@ -191,38 +183,38 @@ const handleSubmit = async (e) => {
             ))}
           </div>
 
-       {/* Number Inputs */}
-<div className="flex flex-wrap gap-6">
-  {['bedrooms', 'bathrooms', 'regularPrice', 'discountPrice'].map((id) => (
-    <div key={id} className="flex items-center gap-2">
-      <input
-        type="number"
-        id={id}
-        min={id === 'regularPrice' || id === 'discountPrice' ? 10 : 1}
-        max="100000"
-        value={formData[id]}
-        onChange={handleChange}
-        className="p-3 border border-grey-300 rounded-lg"
-        required
-      />
-      <div>
-        <p>
-          {id === 'bedrooms'
-            ? 'Beds'
-            : id === 'bathrooms'
-            ? 'Baths'
-            : id === 'regularPrice'
-            ? 'Regular Price'
-            : 'Discounted Price'}
-        </p>
-        {(id === 'regularPrice' || id === 'discountPrice') && (
-          <span className="text-xs">($ / month)</span>
-        )}
-      </div>
-    </div>
-  ))}
-</div>
-
+          {/* ✅ UPDATED RANGE */}
+          <div className="flex flex-wrap gap-6">
+            {['bedrooms', 'bathrooms', 'regularPrice', 'discountPrice'].map((id) => {
+              const isPrice = id === 'regularPrice' || id === 'discountPrice';
+              return (
+                <div key={id} className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    id={id}
+                    min={isPrice ? 500 : 1}
+                    max={isPrice ? 1000000 : 10}
+                    value={formData[id]}
+                    onChange={handleChange}
+                    className="p-3 border border-grey-300 rounded-lg"
+                    required
+                  />
+                  <div>
+                    <p>
+                      {id === 'bedrooms'
+                        ? 'Beds'
+                        : id === 'bathrooms'
+                        ? 'Baths'
+                        : id === 'regularPrice'
+                        ? 'Regular Price'
+                        : 'Discounted Price'}
+                    </p>
+                    {isPrice && <span className="text-xs">($ / month)</span>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* RIGHT SIDE */}
