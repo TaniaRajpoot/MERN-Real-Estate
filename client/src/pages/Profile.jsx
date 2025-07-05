@@ -24,7 +24,7 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [showListingError, setShowListingError] = useState(false);
   const [userListings, setUserListings] = useState([]);
-  const [listingClicked, setListingClicked] = useState(false); // 👈 track Show Listings click
+
 
   const [formData, setFormData] = useState({
     username: currentUser.username || "",
@@ -182,7 +182,7 @@ export default function Profile() {
 
   const handleShowListings = async () => {
     try {
-      setListingClicked(true);
+  
       setShowListingError(false);
       const res = await fetch(`/api/user/listings/${currentUser._id}`, {
         credentials: "include", // ✅ Auth required
@@ -309,10 +309,7 @@ export default function Profile() {
         Show Listings
       </button>
       <p className="text-red-700 mt-5">{showListingError ? 'Error Showing Listings' : ''}</p>
-      {listingClicked && !showListingError && userListings.length === 0 && (
-  <p className="text-center text-gray-600 mt-5">No listings found.</p>
-)}
-
+    
 
       {userListings && userListings.length > 0 && (
         <div className="flex flex-col gap-4">

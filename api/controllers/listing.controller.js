@@ -27,7 +27,7 @@ export const deleteListing = async (req,res,next) =>{
 
   try {
     await Listing.findByIdAndDelete(req.params.id);
-    res.status(200).json('llisting has been deleted');
+    res.status(200).json('listing has been deleted');
   } catch (error) {
     next(error)
   }
@@ -70,53 +70,47 @@ export  const getListing = async(req,res,next)=>{
   }
 }
 
-export const getListings = async (req,res,next) =>{
+export const getListings = async (req, res, next) => {
   try {
     const limit = parseInt(req.query.limit) || 9;
     const startIndex = parseInt(req.query.startIndex) || 0;
-    let offer = req.query.offer;
-
-    if(offer === undefined || offer === 'true' ){
-      offer = {$in: [false,true] };
-    }
-
-    let furnished = req.query.furnished;
-    if(furnished === undefined || furnished === 'true' ){
-      furnished = {$in: [false,true] };
-    }
-
-    let parking = req.query.offer;
-
-    if(parking === undefined || parking === 'true' ){
-      parking = {$in: [false,true] };
-    }
-
-
-    let type = req.query.type;
-    if(type === undefined || type === 'all'){
-      type = {$in: ['sale','rent'] };
-    }
-
-
-    const searchTerm = req.query.searchTerm || '';
-    const order = req.query.order === 'asc' ? 1 : -1; // default to descending
+    const order = req.query.order === 'asc' ? 1 : -1;
     const sort = req.query.sort || 'createdAt';
+    const searchTerm = req.query.searchTerm || '';
 
-    const listings = await Listing.find({
-      name:{$regex: searchTerm, $options:'i'},
-      offer,
-      furnished,
-      parking,
-      type,
-    }).sort(
-      {[sort]:order}
-    ).limit(limit).skip(startIndex);
+    const query = {
+      name: { $regex: searchTerm, $options: 'i' },
+    };
+
+    // Type
+    if (req.query.type && req.query.type !== 'all') {
+      query.type = req.query.type;
+    }
+
+    // Only include parking if true
+    if (req.query.parking === 'true') {
+      query.parking = true;
+    }
+
+    // Only include furnished if true
+    if (req.query.furnished === 'true') {
+      query.furnished = true;
+    }
+
+    // Only include offer if true
+    if (req.query.offer === 'true') {
+      query.offer = true;
+    }
+
+    console.log('Query:', query); // ✅ This should now show up
+
+    const listings = await Listing.find(query)
+      .sort({ [sort]: order })
+      .limit(limit)
+      .skip(startIndex);
 
     return res.status(200).json(listings);
-    
-
   } catch (error) {
     next(error);
   }
-}
-
+};

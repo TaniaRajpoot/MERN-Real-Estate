@@ -6,15 +6,15 @@ export default function Search() {
   const location = useLocation();
   const navigate = useNavigate();
   
-  const [sidebardata, setSidebardata] = useState({
-    searchTerm: '',
-    type: 'all',
-    parking: false,
-    furnished: false,
-    offer: false,
-    sort: 'created_at',
-    order: 'desc',
-  });
+ const [sidebardata, setSidebardata] = useState({
+  searchTerm: '',
+  type: 'all',
+  parking: false,
+  furnished: false,
+  offer: false,
+  sort: 'createdAt', // FIXED
+  order: 'desc',
+});
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
@@ -215,16 +215,17 @@ export default function Search() {
           <div className='flex items-center gap-2'>
             <label className='font-semibold'>Sort:</label>
             <select
-              onChange={handleChange}
-              defaultValue={'created_at_desc'}
-              id='sort_order'
-              className='border rounded-lg p-3'
-            >
-              <option value='regularPrice_desc'>Price high to low</option>
-              <option value='regularPrice_asc'>Price low to hight</option>
-              <option value='createdAt_desc'>Latest</option>
-              <option value='createdAt_asc'>Oldest</option>
-            </select>
+            onChange={handleChange}
+            defaultValue={'createdAt_desc'}
+            id='sort_order'
+            className='border rounded-lg p-3'
+          >
+          <option value='regularPrice_desc'>Price high to low</option>
+          <option value='regularPrice_asc'>Price low to high</option>
+          <option value='createdAt_desc'>Latest</option>
+          <option value='createdAt_asc'>Oldest</option>
+          </select>
+
           </div>
           <button className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95'>
             Search
