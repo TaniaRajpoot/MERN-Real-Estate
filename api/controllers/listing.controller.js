@@ -102,7 +102,6 @@ export const getListings = async (req, res, next) => {
       query.offer = true;
     }
 
-    console.log('Query:', query); // ✅ This should now show up
 
     const listings = await Listing.find(query)
       .sort({ [sort]: order })
