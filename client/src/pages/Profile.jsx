@@ -112,7 +112,7 @@ export default function Profile() {
       }
 
       const res = await fetch(
-        `http://localhost:3000/api/user/update/${currentUser._id}`,
+        `https://mern-realestate-backend.vercel.app/api/user/update/${currentUser._id}`,
         {
           method: "POST",
           headers: {
