@@ -1,13 +1,13 @@
 import { initializeApp } from 'firebase/app';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: "mern-estate-b4e47.firebaseapp.com",
-  projectId: "mern-estate-b4e47",
-  storageBucket: "mern-estate-b4e47.appspot.com",
-  messagingSenderId: "887791614894",
-  appId: "1:887791614894:web:c611fb5f757605c774663f",
-  databaseURL: "https://mern-estate-b4e47-default-rtdb.asia-southeast1.firebasedatabase.app",
+ apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
 };
 
 export const app = initializeApp(firebaseConfig);
