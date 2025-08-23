@@ -15,6 +15,7 @@ import {
   FaShare,
 } from 'react-icons/fa';
 import Contact from '../components/Contact';
+
 export default function Listing() {
   SwiperCore.use([Navigation]);
   const [listing, setListing] = useState(null);
@@ -29,7 +30,8 @@ export default function Listing() {
     const fetchListing = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/listing/get/${params.listingId}`);
+        // Updated API call with your backend URL
+        const res = await fetch(`https://mern-realestate-backend.vercel.app/api/listing/get/${params.listingId}`);
         const data = await res.json();
         if (data.success === false) {
           setError(true);
