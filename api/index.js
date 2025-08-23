@@ -20,7 +20,7 @@ const __dirname = path.resolve();
 const app = express();
 
 app.use(cors({
-  origin: ['http://localhost:5173','https://resplendent-hotteok-30c1cb.netlify.app'],
+  origin: ['http://localhost:5173','https://real-estate-frontend-opal.vercel.app'],
   credentials: true, // if you use cookies, otherwise can be false
 }));
 
