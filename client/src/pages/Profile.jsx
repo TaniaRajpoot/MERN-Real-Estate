@@ -112,13 +112,13 @@ export default function Profile() {
       }
 
       const res = await fetch(
-        `https://mern-realestate-backend.vercel.app/api/user/update/${currentUser._id}`,
+        `${import.meta.env.VITE_API_URL}/api/user/update/${currentUser._id}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include", // ✅ Use cookies for token
+          credentials: "include", 
           body: JSON.stringify(updatedData),
         }
       );
@@ -144,9 +144,9 @@ export default function Profile() {
 
     try {
       dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/delete/${currentUser._id}`, {
         method: "DELETE",
-        credentials: "include", // ✅ Include token
+        credentials: "include", 
       });
       const data = await res.json();
       if (data.success === false) {
@@ -162,9 +162,9 @@ export default function Profile() {
 
   const handleSignOut = async () => {
     try {
-      const res = await fetch('/api/auth/signout', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/signout`, {
         method: 'GET',
-        credentials: 'include', // ✅ Required to clear cookie
+        credentials: 'include',
       });
       const data = await res.json();
 
@@ -184,8 +184,8 @@ export default function Profile() {
     try {
   
       setShowListingError(false);
-      const res = await fetch(`/api/user/listings/${currentUser._id}`, {
-        credentials: "include", // ✅ Auth required
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/listings/${currentUser._id}`, {
+        credentials: "include", 
       });
       const data = await res.json();
       if (data.success === false) {
@@ -201,7 +201,7 @@ export default function Profile() {
 
   const handleListingDelete = async (listingId) => {
     try {
-      const res = await fetch(`/api/listing/delete/${listingId}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/listing/delete/${listingId}`, {
         method: 'DELETE',
         credentials: 'include',
       });

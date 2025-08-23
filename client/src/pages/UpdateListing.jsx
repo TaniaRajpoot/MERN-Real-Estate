@@ -111,7 +111,7 @@ const handleSubmit = async (e) => {
 
   try {
     // Replace with your actual backend URL
-    const res = await fetch(`https://mern-realestate-backend.vercel.app/api/listing/update/${params.listingId}`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/listing/update/${params.listingId}`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',

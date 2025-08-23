@@ -31,7 +31,7 @@ export default function Listing() {
       try {
         setLoading(true);
         // Updated API call with your backend URL
-        const res = await fetch(`https://mern-realestate-backend.vercel.app/api/listing/get/${params.listingId}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/listing/get/${params.listingId}`);
         const data = await res.json();
         if (data.success === false) {
           setError(true);

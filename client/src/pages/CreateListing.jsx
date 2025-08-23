@@ -86,7 +86,7 @@ export default function CreateListing() {
     setSaving(true);
 
     try {
-      const res = await fetch('https://mern-realestate-backend.vercel.app/api/listing/create', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/listing/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
