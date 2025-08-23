@@ -9,46 +9,46 @@ import cors from 'cors';
 import path from 'path';
 dotenv.config(); 
 
-
 mongoose.connect(process.env.MONGO).then(()=>{
     console.log("Connected to MongoDB!");
    }).catch((err)=> {
     console.log(err);
 });
 
-
 const __dirname = path.resolve();
-
 
 const app = express();
 
 app.use(cors({
-  origin: ['http://localhost:5173','https://resplendent-hotteok-30c1cb.netlify.app/'],
+  origin: ['http://localhost:5173','https://resplendent-hotteok-30c1cb.netlify.app'],
   credentials: true, // if you use cookies, otherwise can be false
 }));
-
 
 app.use(express.json());
 app.use(cookieParser());
 
+// Add a root route to confirm backend is running
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'MERN Real Estate API is running!', 
+    status: 'success',
+    timestamp: new Date().toISOString()
+  });
+});
 
 app.listen (3000 , () =>{
     console.log("server is running on port 3000");
-
 });
-
 
 app.use('/api/user', userRoute);
 app.use('/api/auth',authRouter);
 app.use('/api/listing',listingRouter);
-
 
 // app.use(express.static(path.join(__dirname,'/client/dist')));
 
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
 // });
-
 
 app.use((err,req,res,next)=>{
     const statusCode = err.statusCode || 500;
@@ -58,5 +58,4 @@ app.use((err,req,res,next)=>{
         statusCode: statusCode,
         message,
     });
-
 })
