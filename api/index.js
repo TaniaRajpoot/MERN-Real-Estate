@@ -7,13 +7,15 @@ import cookieParser from  'cookie-parser'
 import listingRouter from './routes/listing.route.js'
 import cors from 'cors';
 import path from 'path';
+import connectDatabase from './DB/db.js';
 dotenv.config(); 
+connectDatabase();
 
-mongoose.connect(process.env.MONGO).then(()=>{
-    console.log("Connected to MongoDB!");
-   }).catch((err)=> {
-    console.log(err);
-});
+// mongoose.connect(process.env.MONGO).then(()=>{
+//     console.log("Connected to MongoDB!");
+//    }).catch((err)=> {
+//     console.log(err);
+// });
 
 const __dirname = path.resolve();
 
