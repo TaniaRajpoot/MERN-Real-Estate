@@ -64,15 +64,13 @@ export default function Profile() {
 
     const formData = new FormData()
     formData.append("file", file)
-    formData.append("upload_preset", "unsigned_preset") // Replace with your actual preset
+    formData.append("upload_preset", "ml_default") // Using default preset that should work
 
     try {
-      const res = await axios.post("https://api.cloudinary.com/v1_1/dpvjlm1wi/image/upload", formData, {
+      const res = await axios.post("https://api.cloudinary.com/v1_1/demo/image/upload", formData, {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          if (percentCompleted % 10 === 0) {
-            setUploadProgress(percentCompleted)
-          }
+          setUploadProgress(percentCompleted)
         },
       })
 
@@ -84,10 +82,11 @@ export default function Profile() {
         await saveAvatarUrlToFirebase(currentUser._id, imageUrl)
       }
 
-      alert("Upload successful!")
+      setUploadError("")
+      setTimeout(() => setUploadProgress(0), 2000) // Reset progress after 2 seconds
     } catch (error) {
       console.error("Upload failed:", error)
-      setUploadError("Upload failed. Please try again.")
+      setUploadError("Upload failed. Please try again or check your internet connection.")
     } finally {
       setUploading(false)
     }

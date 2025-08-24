@@ -236,24 +236,20 @@ export default function Search() {
           </div>
 
           <button className="bg-gradient-to-r from-[#686f4b] to-[#424b1e] text-white p-4 rounded-lg uppercase hover:from-[#424b1e] hover:to-[#2f380f] transition-all duration-300 font-semibold shadow-lg transform hover:scale-105">
-            🔍 Search Properties
+            Search Properties
           </button>
         </form>
       </div>
 
       <div className="flex-1 bg-white/30 backdrop-blur-sm">
         <div className="bg-gradient-to-r from-[#686f4b] to-[#424b1e] text-white p-6 shadow-lg">
-          <h1 className="text-3xl font-bold flex items-center gap-3">
-            <span className="text-4xl">🏠</span>
-            Search Results
-          </h1>
+          <h1 className="text-3xl font-bold">Search Results</h1>
           <p className="text-white/80 mt-2">Find your perfect property</p>
         </div>
 
         <div className="p-7">
           {!loading && listings.length === 0 && (
             <div className="text-center py-16">
-              <div className="text-6xl mb-4">🔍</div>
               <p className="text-2xl text-[#424b1e] font-semibold mb-2">No properties found!</p>
               <p className="text-[#686f4b]">Try adjusting your search filters</p>
             </div>
@@ -261,17 +257,18 @@ export default function Search() {
 
           {loading && (
             <div className="text-center py-16">
-              <div className="animate-spin text-6xl mb-4">⏳</div>
               <p className="text-2xl text-[#424b1e] font-semibold">Loading amazing properties...</p>
             </div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
             {!loading &&
               listings &&
               listings.map((listing) => (
-                <div key={listing._id} className="transform hover:scale-105 transition-transform duration-300">
-                  <ListingItem listing={listing} />
+                <div key={listing._id} className="flex">
+                  <div className="w-full transform hover:scale-105 transition-transform duration-300">
+                    <ListingItem listing={listing} />
+                  </div>
                 </div>
               ))}
           </div>
