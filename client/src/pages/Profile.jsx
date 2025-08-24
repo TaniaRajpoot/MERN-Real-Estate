@@ -58,12 +58,11 @@ export default function Profile() {
 
     if (!file.type.startsWith("image/")) {
       setUploading(false)
-      setUploadError("Please upload a valid image file (jpg, png, jpeg, etc.)")
+      setUploadError("Please upload a valid image file (JPG, PNG, GIF, WebP)")
       return
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      // 10MB limit
       setUploading(false)
       setUploadError("Image file is too large. Please choose a file smaller than 10MB.")
       return
@@ -71,12 +70,17 @@ export default function Profile() {
 
     const formData = new FormData()
     formData.append("file", file)
-    formData.append("upload_preset", "ml_default")
+    formData.append("upload_preset", "unsigned_preset") // More common preset name
     formData.append("cloud_name", "demo")
 
     try {
       console.log("[v0] Starting image upload...")
+      console.log("[v0] File details:", { name: file.name, size: file.size, type: file.type })
+
       const res = await axios.post("https://api.cloudinary.com/v1_1/demo/image/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
           setUploadProgress(percentCompleted)
@@ -88,7 +92,6 @@ export default function Profile() {
       const imageUrl = res.data.secure_url
 
       setAvatar(imageUrl)
-
       dispatch(updateUserAvatar(imageUrl))
       console.log("[v0] Redux state updated with new avatar")
 
@@ -103,16 +106,25 @@ export default function Profile() {
       console.log("[v0] Profile picture upload completed successfully")
     } catch (error) {
       console.error("[v0] Upload failed:", error)
-      console.error("[v0] Error details:", error.response?.data || error.message)
+      console.error("[v0] Error response:", error.response?.data)
+      console.error("[v0] Error status:", error.response?.status)
 
-      if (error.response?.status === 400) {
-        setUploadError("Invalid image file or upload configuration. Please try a different image.")
+      if (error.response?.data?.error?.message) {
+        setUploadError(`Upload failed: ${error.response.data.error.message}`)
+      } else if (error.response?.status === 400) {
+        setUploadError(
+          "Upload configuration error. The image format may not be supported or the upload preset is invalid.",
+        )
       } else if (error.response?.status === 413) {
         setUploadError("Image file is too large. Please choose a smaller image.")
-      } else if (error.code === "NETWORK_ERROR") {
+      } else if (error.response?.status === 401) {
+        setUploadError("Upload not authorized. Please try again or contact support.")
+      } else if (error.code === "NETWORK_ERROR" || !error.response) {
         setUploadError("Network error. Please check your internet connection and try again.")
       } else {
-        setUploadError("Upload failed. Please try again or contact support if the issue persists.")
+        setUploadError(
+          `Upload failed (${error.response?.status || "Unknown error"}). Please try a different image or contact support.`,
+        )
       }
 
       setAvatar(currentUser.avatar || "")
