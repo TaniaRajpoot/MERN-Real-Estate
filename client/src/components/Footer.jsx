@@ -3,7 +3,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaPhone, FaEnvelope, Fa
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-[#2f380f] to-[#424b1e] text-white mt-16">
+    <footer className="bg-[#424b1e] text-white mt-16">
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -18,16 +18,14 @@ export default function Footer() {
               service and expert guidance.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-[#9ea38c] hover:text-[#d7d9d0] transition-colors duration-300">
+              <a href="https://www.facebook.com/profile.php?id=61563528295281" className="text-[#9ea38c] hover:text-[#d7d9d0] transition-colors duration-300">
                 <FaFacebook size={20} />
               </a>
-              <a href="#" className="text-[#9ea38c] hover:text-[#d7d9d0] transition-colors duration-300">
-                <FaTwitter size={20} />
-              </a>
-              <a href="#" className="text-[#9ea38c] hover:text-[#d7d9d0] transition-colors duration-300">
+        
+              <a href="https://www.instagram.com/tania____rajpoot___/" className="text-[#9ea38c] hover:text-[#d7d9d0] transition-colors duration-300">
                 <FaInstagram size={20} />
               </a>
-              <a href="#" className="text-[#9ea38c] hover:text-[#d7d9d0] transition-colors duration-300">
+              <a href="https://www.linkedin.com/in/tania-ashraf-/" className="text-[#9ea38c] hover:text-[#d7d9d0] transition-colors duration-300">
                 <FaLinkedin size={20} />
               </a>
             </div>
