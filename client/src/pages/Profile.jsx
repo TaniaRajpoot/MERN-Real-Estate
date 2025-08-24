@@ -1,479 +1,458 @@
-"use client"
-
-import { useSelector, useDispatch } from "react-redux"
-import { useRef, useState, useEffect } from "react"
-import { useNavigate, Link } from "react-router-dom"
-import axios from "axios"
+import { useSelector, useDispatch } from "react-redux";
+import { useRef, useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 import {
   deleteUserFailure,
   deleteUserStart,
   deleteUserSuccess,
   signOutUserSuccess,
   updateUserAvatar,
-} from "../redux/user/userSlice"
-import { getDatabase, ref, update } from "firebase/database"
-import { app } from "../firebase"
+} from "../redux/user/userSlice";
+import { getDatabase, ref, update } from "firebase/database";
+import { app } from "../firebase";
 
 export default function Profile() {
-  const { currentUser } = useSelector((state) => state.user)
-  const dispatch = useDispatch()
-  const fileRef = useRef(null)
-  const navigate = useNavigate()
-  const [uploading, setUploading] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState(0)
-  const [uploadError, setUploadError] = useState("")
-  const [avatar, setAvatar] = useState(currentUser.avatar || "")
-  const [isEditing, setIsEditing] = useState(false)
-  const [showListingError, setShowListingError] = useState(false)
-  const [userListings, setUserListings] = useState([])
+  const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const fileRef = useRef(null);
+  const navigate = useNavigate();
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState("");
+  const [avatar, setAvatar] = useState(currentUser.avatar || "");
+  const [isEditing, setIsEditing] = useState(false);
+  const [showListingError, setShowListingError] = useState(false);
+  const [userListings, setUserListings] = useState([]);
 
   const [formData, setFormData] = useState({
     username: currentUser.username || "",
     email: currentUser.email || "",
     password: "",
-  })
+  });
 
-  const db = getDatabase(app)
+  const db = getDatabase(app);
 
   useEffect(() => {
-    setAvatar(currentUser.avatar || "")
-  }, [currentUser.avatar])
+    setAvatar(currentUser.avatar || "");
+  }, [currentUser.avatar]);
 
   const saveAvatarUrlToFirebase = async (userId, avatarUrl) => {
-    const userRef = ref(db, "users/" + userId)
+    const userRef = ref(db, "users/" + userId);
     try {
-      await update(userRef, { avatar: avatarUrl })
+      await update(userRef, { avatar: avatarUrl });
     } catch (err) {
-      console.error("Firebase update error:", err)
+      console.error("Firebase update error:", err);
     }
-  }
+  };
 
   const handleUpload = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
+    const file = e.target.files[0];
+    if (!file) return;
 
-    setUploadError("")
-    setUploading(true)
-    setUploadProgress(0)
+    setUploadError("");
+    setUploading(true);
+    setUploadProgress(0);
 
     if (!file.type.startsWith("image/")) {
-      setUploading(false)
-      setUploadError("Please upload a valid image file (JPG, PNG, GIF, WebP)")
-      return
+      setUploading(false);
+      setUploadError("Please upload a valid image file (jpg, png, jpeg, etc.)");
+      return;
     }
 
-    if (file.size > 10 * 1024 * 1024) {
-      setUploading(false)
-      setUploadError("Image file is too large. Please choose a file smaller than 10MB.")
-      return
-    }
-
-    const formData = new FormData()
-    formData.append("file", file)
-    formData.append("upload_preset", "unsigned_preset") // More common preset name
-    formData.append("cloud_name", "demo")
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "unsigned_preset");
 
     try {
-      console.log("[v0] Starting image upload...")
-      console.log("[v0] File details:", { name: file.name, size: file.size, type: file.type })
+      const res = await axios.post(
+        "https://api.cloudinary.com/v1_1/dpvjlm1wi/image/upload",
+        formData,
+        {
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            if (percentCompleted % 10 === 0) {
+              setUploadProgress(percentCompleted);
+            }
+          },
+        }
+      );
 
-      const res = await axios.post("https://api.cloudinary.com/v1_1/demo/image/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          setUploadProgress(percentCompleted)
-          console.log("[v0] Upload progress:", percentCompleted + "%")
-        },
-      })
-
-      console.log("[v0] Upload response:", res.data)
-      const imageUrl = res.data.secure_url
-
-      setAvatar(imageUrl)
-      dispatch(updateUserAvatar(imageUrl))
-      console.log("[v0] Redux state updated with new avatar")
+      const imageUrl = res.data.secure_url;
+      dispatch(updateUserAvatar(imageUrl));
+      setAvatar(imageUrl);
 
       if (currentUser._id) {
-        console.log("[v0] Saving to Firebase...")
-        await saveAvatarUrlToFirebase(currentUser._id, imageUrl)
-        console.log("[v0] Firebase update completed")
+        await saveAvatarUrlToFirebase(currentUser._id, imageUrl);
       }
 
-      setUploadError("")
-      setTimeout(() => setUploadProgress(0), 3000)
-      console.log("[v0] Profile picture upload completed successfully")
+      alert("Upload successful!");
     } catch (error) {
-      console.error("[v0] Upload failed:", error)
-      console.error("[v0] Error response:", error.response?.data)
-      console.error("[v0] Error status:", error.response?.status)
-
-      if (error.response?.data?.error?.message) {
-        setUploadError(`Upload failed: ${error.response.data.error.message}`)
-      } else if (error.response?.status === 400) {
-        setUploadError(
-          "Upload configuration error. The image format may not be supported or the upload preset is invalid.",
-        )
-      } else if (error.response?.status === 413) {
-        setUploadError("Image file is too large. Please choose a smaller image.")
-      } else if (error.response?.status === 401) {
-        setUploadError("Upload not authorized. Please try again or contact support.")
-      } else if (error.code === "NETWORK_ERROR" || !error.response) {
-        setUploadError("Network error. Please check your internet connection and try again.")
-      } else {
-        setUploadError(
-          `Upload failed (${error.response?.status || "Unknown error"}). Please try a different image or contact support.`,
-        )
-      }
-
-      setAvatar(currentUser.avatar || "")
+      console.error("Upload failed:", error);
+      setUploadError("Upload failed. Please try again.");
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
-  }
+  };
 
   const handleEditable = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      const updatedData = { ...formData }
+      const updatedData = { ...formData };
       if (updatedData.password === "") {
-        delete updatedData.password
+        delete updatedData.password;
       }
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/update/${currentUser._id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(updatedData),
-      })
+      const res = await fetch(
+        `https://mern-realestate-backend.vercel.app/api/user/update/${currentUser._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(updatedData),
+        }
+      );
 
-      const data = await res.json()
+      const data = await res.json();
 
       if (!res.ok || data.success === false) {
-        alert("Update failed: " + (data.message || res.statusText))
-        return
+        alert("Update failed: " + (data.message || res.statusText));
+        return;
       }
 
-      alert("Profile updated successfully!")
-      setIsEditing(false)
+      alert("Profile updated successfully!");
+      setIsEditing(false);
     } catch (error) {
-      console.error("Update error:", error)
-      alert("An error occurred while updating the profile.")
+      console.error("Update error:", error);
+      alert("An error occurred while updating the profile.");
     }
-  }
+  };
 
   const handleDeleteUser = async () => {
-    const confirmed = window.confirm("Are you sure you want to delete your account?")
-    if (!confirmed) return
+    const confirmed = window.confirm("Are you sure you want to delete your account?");
+    if (!confirmed) return;
 
     try {
-      dispatch(deleteUserStart())
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/delete/${currentUser._id}`, {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
         method: "DELETE",
         credentials: "include",
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
       if (data.success === false) {
-        dispatch(deleteUserFailure(data.message))
-        return
+        dispatch(deleteUserFailure(data.message));
+        return;
       }
-      dispatch(deleteUserSuccess(data))
-      alert("Account deleted successfully!")
+      dispatch(deleteUserSuccess(data));
+      alert("Account deleted successfully!");
     } catch (error) {
-      dispatch(deleteUserFailure(error.message))
+      dispatch(deleteUserFailure(error.message));
     }
-  }
+  };
 
   const handleSignOut = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/signout`, {
-        method: "GET",
-        credentials: "include",
-      })
-      const data = await res.json()
+      const res = await fetch('/api/auth/signout', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      const data = await res.json();
 
       if (data.success === false) {
-        dispatch(deleteUserFailure(data.message))
-        return
+        dispatch(deleteUserFailure(data.message));
+        return;
       }
 
-      dispatch(signOutUserSuccess())
-      navigate("/signin")
+      dispatch(signOutUserSuccess());
+      navigate('/signin');
     } catch (error) {
-      dispatch(deleteUserFailure(error.message))
+      dispatch(deleteUserFailure(error.message));
     }
-  }
+  };
 
   const handleShowListings = async () => {
     try {
-      setShowListingError(false)
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/listings/${currentUser._id}`, {
+      setShowListingError(false);
+      const res = await fetch(`/api/user/listings/${currentUser._id}`, {
         credentials: "include",
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
       if (data.success === false) {
-        setShowListingError(true)
-        return
+        setShowListingError(true);
+        return;
       }
-      setUserListings(data)
+      setUserListings(data);
     } catch (error) {
-      console.log(error.message)
-      setShowListingError(true)
+      console.log(error.message);
+      setShowListingError(true);
     }
-  }
+  };
 
   const handleListingDelete = async (listingId) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/listing/delete/${listingId}`, {
-        method: "DELETE",
-        credentials: "include",
-      })
-      const data = await res.json()
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      const data = await res.json();
       if (data.success === false) {
-        return
+        return;
       }
 
-      setUserListings((prev) => prev.filter((listing) => listing._id !== listingId))
+      setUserListings((prev) =>
+        prev.filter((listing) => listing._id !== listingId)
+      );
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
-  }
-
-  const handleImageClick = () => {
-    if (!uploading && fileRef.current) {
-      console.log("[v0] Triggering file input click")
-      fileRef.current.click()
-    }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#d7d9d0] to-[#cdd0c4] py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="bg-gradient-to-r from-[#686f4b] to-[#424b1e] text-white p-8 rounded-t-2xl shadow-xl">
-          <h1 className="text-4xl font-bold text-center">My Profile</h1>
-          <p className="text-center text-white/80 mt-2">Manage your account and listings</p>
-        </div>
+    <div className="p-3 max-w-2xl mx-auto bg-white min-h-screen">
+      {/* Header */}
+      <div className="text-white text-center py-6 rounded-lg mb-6 shadow-md" style={{backgroundColor: '#424b1e'}}>
+        <h1 className="text-3xl font-semibold">My Profile</h1>
+        <p className="mt-2" style={{color: '#cdd0c4'}}>Manage your account and listings</p>
+      </div>
 
-        <div className="bg-white/80 backdrop-blur-sm rounded-b-2xl shadow-xl p-8">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            <div className="flex flex-col items-center mb-6">
+      {/* Profile Form Container */}
+      <div className="rounded-lg shadow-lg p-6 mb-6 border" style={{backgroundColor: 'white', borderColor: '#c1c4b5'}}>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* Avatar Section */}
+          <div className="flex justify-center mb-6">
+            <div className="relative">
               <input
                 type="file"
                 ref={fileRef}
-                style={{ display: "none" }}
+                hidden
                 accept="image/*"
                 onChange={handleUpload}
-                key={`file-input-${Date.now()}`}
               />
-              <div className="relative group">
-                <img
-                  key={`avatar-${avatar}-${Date.now()}`}
-                  onClick={handleImageClick}
-                  src={avatar || currentUser?.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-                  onError={(e) => {
-                    console.log("[v0] Image load error, using fallback")
-                    e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                  }}
-                  alt="profile"
-                  className={`rounded-full h-32 w-32 object-cover border-4 border-[#9ea38c] shadow-lg group-hover:border-[#686f4b] transition-all duration-300 ${
-                    uploading ? "cursor-not-allowed opacity-70" : "cursor-pointer"
-                  }`}
-                />
-                <div
-                  className="absolute inset-0 rounded-full bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
-                  onClick={handleImageClick}
-                >
-                  <span className="text-white font-semibold text-sm text-center px-2 pointer-events-none">
-                    {uploading ? `${uploadProgress}%` : "Change Photo"}
-                  </span>
-                </div>
-              </div>
-
+              <img
+                onClick={() => fileRef.current.click()}
+                src={avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                onError={(e) => {
+                  e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+                }}
+                alt="profile"
+                className="rounded-full h-24 w-24 object-cover cursor-pointer border-4 shadow-md"
+                style={{borderColor: '#868c6f'}}
+              />
               {uploading && (
-                <div className="mt-4 w-full max-w-xs">
-                  <div className="bg-[#cdd0c4] rounded-full h-3 overflow-hidden">
-                    <div
-                      className="bg-gradient-to-r from-[#686f4b] to-[#424b1e] h-3 rounded-full transition-all duration-500 ease-out"
-                      style={{ width: `${uploadProgress}%` }}
-                    ></div>
-                  </div>
-                  <p className="text-center text-[#424b1e] font-semibold mt-2">Uploading... {uploadProgress}%</p>
-                </div>
-              )}
-
-              {!uploading && uploadProgress > 0 && !uploadError && (
-                <div className="mt-4 text-center">
-                  <p className="text-green-600 font-semibold bg-green-100 px-4 py-2 rounded-lg border border-green-300">
-                    ✓ Profile picture updated successfully!
-                  </p>
-                </div>
-              )}
-
-              {uploadError && (
-                <div className="mt-4 text-center max-w-md">
-                  <p className="text-red-600 font-semibold bg-red-100 px-4 py-2 rounded-lg border border-red-300">
-                    ✗ {uploadError}
-                  </p>
-                  <button
-                    onClick={handleImageClick}
-                    className="mt-2 text-sm text-[#686f4b] hover:text-[#424b1e] underline"
-                  >
-                    Try uploading again
-                  </button>
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
+                  <span className="text-white text-sm">{uploadProgress}%</span>
                 </div>
               )}
             </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-[#424b1e] font-semibold mb-2">Username</label>
-                <input
-                  type="text"
-                  placeholder="Username"
-                  id="username"
-                  value={formData.username}
-                  onChange={handleEditable}
-                  disabled={!isEditing}
-                  className="w-full border-2 border-[#9ea38c] p-4 rounded-lg focus:border-[#686f4b] focus:outline-none transition-colors bg-white/80 backdrop-blur-sm disabled:bg-gray-100"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[#424b1e] font-semibold mb-2">Email</label>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  id="email"
-                  value={formData.email}
-                  onChange={handleEditable}
-                  disabled={!isEditing}
-                  className="w-full border-2 border-[#9ea38c] p-4 rounded-lg focus:border-[#686f4b] focus:outline-none transition-colors bg-white/80 backdrop-blur-sm disabled:bg-gray-100"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-[#424b1e] font-semibold mb-2">Password</label>
-              <input
-                type="password"
-                placeholder="New Password (leave blank to keep current)"
-                id="password"
-                value={formData.password}
-                onChange={handleEditable}
-                disabled={!isEditing}
-                className="w-full border-2 border-[#9ea38c] p-4 rounded-lg focus:border-[#686f4b] focus:outline-none transition-colors bg-white/80 backdrop-blur-sm disabled:bg-gray-100"
-              />
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                type="button"
-                onClick={() => setIsEditing(!isEditing)}
-                className="flex-1 bg-gradient-to-r from-[#9ea38c] to-[#686f4b] text-white rounded-lg p-4 uppercase hover:from-[#686f4b] hover:to-[#424b1e] transition-all duration-300 font-semibold shadow-lg transform hover:scale-105"
-              >
-                {isEditing ? "Cancel" : "Edit Profile"}
-              </button>
-
-              {isEditing && (
-                <button
-                  type="submit"
-                  className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg p-4 uppercase hover:from-green-600 hover:to-green-700 transition-all duration-300 font-semibold shadow-lg transform hover:scale-105"
-                >
-                  Save Changes
-                </button>
-              )}
-            </div>
-
-            <Link
-              className="bg-gradient-to-r from-orange-400 to-orange-500 text-white p-4 rounded-lg uppercase text-center hover:from-orange-500 hover:to-orange-600 transition-all duration-300 font-semibold shadow-lg transform hover:scale-105 flex items-center justify-center gap-2"
-              to={"/create-listing"}
-            >
-              Create New Listing
-            </Link>
-          </form>
-
-          <div className="flex justify-between mt-8 pt-6 border-t border-[#9ea38c]">
-            <button
-              onClick={handleDeleteUser}
-              className="text-red-600 hover:text-red-800 font-semibold hover:bg-red-50 px-4 py-2 rounded-lg transition-all duration-300"
-            >
-              Delete Account
-            </button>
-            <button
-              onClick={handleSignOut}
-              className="text-red-600 hover:text-red-800 font-semibold hover:bg-red-50 px-4 py-2 rounded-lg transition-all duration-300"
-            >
-              Sign Out
-            </button>
           </div>
 
-          <button
-            onClick={handleShowListings}
-            className="w-full mt-6 bg-gradient-to-r from-[#b1b5a3] to-[#9ea38c] text-[#424b1e] p-4 rounded-lg font-semibold hover:from-[#9ea38c] hover:to-[#686f4b] hover:text-white transition-all duration-300 shadow-lg transform hover:scale-105"
-          >
-            Show My Listings
-          </button>
-
-          {showListingError && (
-            <p className="text-red-600 mt-4 text-center bg-red-100 p-3 rounded-lg">
-              Error loading listings. Please try again.
+          {/* Upload Status Messages */}
+          {uploading && (
+            <p className="text-center font-semibold" style={{color: '#424b1e'}}>
+              Uploading... {uploadProgress}%
+            </p>
+          )}
+          {!uploading && uploadProgress === 100 && !uploadError && (
+            <p className="text-center font-semibold" style={{color: '#686f4b'}}>
+              Image Upload Successful!
+            </p>
+          )}
+          {uploadError && (
+            <p className="text-center text-red-600 font-semibold">
+              {uploadError}
             </p>
           )}
 
-          {userListings && userListings.length > 0 && (
-            <div className="mt-8">
-              <div className="bg-gradient-to-r from-[#c1c4b5] to-[#b1b5a3] p-6 rounded-lg mb-6">
-                <h2 className="text-center text-2xl font-bold text-[#424b1e]">Your Property Listings</h2>
-              </div>
-
-              <div className="grid gap-4">
-                {userListings.map((listing) => (
-                  <div
-                    key={listing._id}
-                    className="bg-white/60 backdrop-blur-sm border border-[#9ea38c] rounded-lg p-4 flex justify-between items-center gap-4 hover:bg-white/80 transition-all duration-300 shadow-lg"
-                  >
-                    <Link to={`/listing/${listing._id}`} className="flex items-center gap-4">
-                      <img
-                        src={listing.imageUrls[0] || "/placeholder.svg"}
-                        alt="listing cover"
-                        className="h-16 w-16 object-cover rounded-lg border-2 border-[#9ea38c]"
-                      />
-                      <div>
-                        <p className="text-[#424b1e] font-semibold hover:text-[#686f4b] transition-colors">
-                          {listing.name}
-                        </p>
-                        <p className="text-[#686f4b] text-sm">Click to view details</p>
-                      </div>
-                    </Link>
-
-                    <div className="flex gap-2">
-                      <Link to={`/update-listing/${listing._id}`}>
-                        <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors font-semibold">
-                          Edit
-                        </button>
-                      </Link>
-                      <button
-                        onClick={() => handleListingDelete(listing._id)}
-                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors font-semibold"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          {/* Form Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{color: '#2f380f'}}>
+                Username
+              </label>
+              <input
+                type="text"
+                placeholder="Username"
+                id="username"
+                value={formData.username}
+                onChange={handleEditable}
+                disabled={!isEditing}
+                className="w-full p-3 rounded-lg focus:ring-2 focus:border-transparent shadow-sm"
+                style={{
+                  border: `2px solid #b1b5a3`,
+                  backgroundColor: isEditing ? 'white' : '#f9f9f9',
+                  color: '#2f380f'
+                }}
+              />
             </div>
-          )}
+            
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{color: '#2f380f'}}>
+                Email
+              </label>
+              <input
+                type="email"
+                placeholder="Email"
+                id="email"
+                value={formData.email}
+                onChange={handleEditable}
+                disabled={!isEditing}
+                className="w-full p-3 rounded-lg focus:ring-2 focus:border-transparent shadow-sm"
+                style={{
+                  border: `2px solid #b1b5a3`,
+                  backgroundColor: isEditing ? 'white' : '#f9f9f9',
+                  color: '#2f380f'
+                }}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2" style={{color: '#2f380f'}}>
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="New Password (leave blank to keep current)"
+              id="password"
+              value={formData.password}
+              onChange={handleEditable}
+              disabled={!isEditing}
+              className="w-full p-3 rounded-lg focus:ring-2 focus:border-transparent shadow-sm"
+              style={{
+                border: `2px solid #b1b5a3`,
+                backgroundColor: isEditing ? 'white' : '#f9f9f9',
+                color: '#2f380f'
+              }}
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col gap-3 mt-6">
+            <button
+              type="button"
+              onClick={() => setIsEditing(!isEditing)}
+              className="  text-white rounded-lg p-3 font-medium transition duration-200 shadow-md hover:shadow-lg"
+              style={{backgroundColor: '#686f4b'}}
+            >
+              {isEditing ? "Cancel" : "Edit Profile"}
+            </button>
+            
+            {isEditing && (
+              <button
+                type="submit"
+                className="bg-green-700 text-white rounded-lg p-3 font-medium transition duration-200 shadow-md hover:shadow-lg"
+                // style={{backgroundColor: '#9ea38c'}}
+              >
+                Save Changes
+              </button>
+            )}
+            
+            <Link 
+              className=" bg-orange-400 text-white p-3 rounded-lg text-center font-medium transition duration-200 shadow-md hover:shadow-lg" 
+              to={"/create-listing"}
+              // style={{backgroundColor: '#b1b5a3'}}
+            >
+              Create New Listing
+            </Link>
+          </div>
+        </form>
+
+        {/* Account Actions */}
+        <div className="flex justify-between mt-6 pt-6" style={{borderTop: `1px solid #c1c4b5`}}>
+          <span 
+            onClick={handleDeleteUser} 
+            className="cursor-pointer hover:underline font-medium"
+            style={{color: '#424b1e'}}
+          >
+            Delete Account
+          </span>
+          <span 
+            onClick={handleSignOut} 
+            className="cursor-pointer hover:underline font-medium"
+            style={{color: '#424b1e'}}
+          >
+            Sign Out
+          </span>
         </div>
       </div>
+
+      {/* Show Listings Button */}
+      <div className="rounded-lg p-4 mb-6 border shadow-md" style={{backgroundColor: '#f9f9f9', borderColor: '#c1c4b5'}}>
+        <button 
+          onClick={handleShowListings} 
+          className="w-full text-white py-3 px-4 rounded-lg font-medium transition duration-200 shadow-md hover:shadow-lg"
+          style={{backgroundColor: '#868c6f'}}
+        >
+          Show My Listings
+        </button>
+        {showListingError && (
+          <p className="text-red-600 mt-3 text-center font-medium">
+            Error Showing Listings
+          </p>
+        )}
+      </div>
+
+      {/* Property Listings */}
+      {userListings && userListings.length > 0 && (
+        <div className="rounded-lg p-6 border shadow-md" style={{backgroundColor: '#f9f9f9', borderColor: '#c1c4b5'}}>
+          <h2 className="text-center text-2xl font-semibold mb-6" style={{color: '#2f380f'}}>
+            Your Property Listings
+          </h2>
+          
+          <div className="space-y-4">
+            {userListings.map((listing) => (
+              <div 
+                key={listing._id} 
+                className="bg-white rounded-lg p-4 flex items-center justify-between gap-4 shadow-md hover:shadow-lg transition duration-200 border"
+                style={{borderColor: '#c1c4b5'}}
+              >
+                <Link to={`/listing/${listing._id}`} className="flex-shrink-0">
+                  <img
+                    src={listing.imageUrls[0]}
+                    alt="listing cover"
+                    className="h-16 w-16 object-cover rounded-lg shadow-sm"
+                  />
+                </Link>
+                
+                <Link
+                  className="font-semibold hover:underline flex-1 text-left"
+                  to={`/listing/${listing._id}`}
+                  style={{color: '#2f380f'}}
+                >
+                  <p className="truncate">{listing.name}</p>
+                  <p className="text-sm mt-1" style={{color: '#686f4b'}}>Click to view details</p>
+                </Link>
+                
+                <div className="flex gap-2">
+                  <Link to={`/update-listing/${listing._id}`}>
+                    <button 
+                      className="text-white px-4 py-2 rounded font-medium transition duration-200 shadow-md hover:shadow-lg"
+                      style={{backgroundColor: '#868c6f'}}
+                    >
+                      Edit
+                    </button>
+                  </Link>
+                  <button 
+                    onClick={() => handleListingDelete(listing._id)} 
+                    className="bg-red-500 text-white px-4 py-2 rounded font-medium hover:bg-red-600 transition duration-200 shadow-md hover:shadow-lg"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
-  )
+  );
 }
