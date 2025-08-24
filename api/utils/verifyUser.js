@@ -1,13 +1,20 @@
-import jwt from 'jsonwebtoken';
-import { errorHandler } from '../utils/error.js';
+import jwt from "jsonwebtoken";
+import { errorHandler } from "../utils/error.js";
 
 export const verifyToken = (req, res, next) => {
-  const token = req.cookies.token; // ✅ FIXED
+  console.log("All cookies received:", req.cookies);
+  const token = req.cookies.token;
+  console.log("Token from cookies:", token);
 
-  if (!token) return next(errorHandler(401, 'Unauthorized'));
+  if (!token) return next(errorHandler(401, "Unauthorized."));
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return next(errorHandler(403, 'Forbidden!'));
+    if (err) {
+      console.log("JWT verification error:", err.message);
+      return next(errorHandler(403, "Forbidden."));
+    }
+
+    console.log("JWT verified successfully for user:", user.id);
     req.user = user;
     next();
   });
