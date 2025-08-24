@@ -62,9 +62,16 @@ export default function Profile() {
       return
     }
 
+    if (file.size > 10 * 1024 * 1024) {
+      // 10MB limit
+      setUploading(false)
+      setUploadError("Image file is too large. Please choose a file smaller than 10MB.")
+      return
+    }
+
     const formData = new FormData()
     formData.append("file", file)
-    formData.append("upload_preset", "unsigned_preset") // Using unsigned preset
+    formData.append("upload_preset", "ml_default")
     formData.append("cloud_name", "demo")
 
     try {
@@ -92,19 +99,23 @@ export default function Profile() {
       }
 
       setUploadError("")
-      setTimeout(() => setUploadProgress(0), 2000)
+      setTimeout(() => setUploadProgress(0), 3000)
       console.log("[v0] Profile picture upload completed successfully")
     } catch (error) {
       console.error("[v0] Upload failed:", error)
       console.error("[v0] Error details:", error.response?.data || error.message)
 
       if (error.response?.status === 400) {
-        setUploadError("Invalid image file. Please try a different image.")
+        setUploadError("Invalid image file or upload configuration. Please try a different image.")
       } else if (error.response?.status === 413) {
         setUploadError("Image file is too large. Please choose a smaller image.")
+      } else if (error.code === "NETWORK_ERROR") {
+        setUploadError("Network error. Please check your internet connection and try again.")
       } else {
-        setUploadError("Upload failed. Please try again or check your internet connection.")
+        setUploadError("Upload failed. Please try again or contact support if the issue persists.")
       }
+
+      setAvatar(currentUser.avatar || "")
     } finally {
       setUploading(false)
     }
@@ -235,29 +246,40 @@ export default function Profile() {
         <div className="bg-white/80 backdrop-blur-sm rounded-b-2xl shadow-xl p-8">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="flex flex-col items-center mb-6">
-              <input type="file" ref={fileRef} hidden accept="image/*" onChange={handleUpload} />
+              <input
+                type="file"
+                ref={fileRef}
+                hidden
+                accept="image/*"
+                onChange={handleUpload}
+                key={`file-input-${Date.now()}`}
+              />
               <div className="relative group">
                 <img
-                  key={avatar}
-                  onClick={() => fileRef.current.click()}
+                  key={`avatar-${avatar}-${Date.now()}`}
+                  onClick={() => !uploading && fileRef.current.click()}
                   src={avatar || currentUser?.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                   onError={(e) => {
                     console.log("[v0] Image load error, using fallback")
                     e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                   }}
                   alt="profile"
-                  className="rounded-full h-32 w-32 object-cover cursor-pointer border-4 border-[#9ea38c] shadow-lg group-hover:border-[#686f4b] transition-all duration-300"
+                  className={`rounded-full h-32 w-32 object-cover border-4 border-[#9ea38c] shadow-lg group-hover:border-[#686f4b] transition-all duration-300 ${
+                    uploading ? "cursor-not-allowed opacity-70" : "cursor-pointer"
+                  }`}
                 />
                 <div className="absolute inset-0 rounded-full bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <span className="text-white font-semibold">{uploading ? "Uploading..." : "Change Photo"}</span>
+                  <span className="text-white font-semibold text-sm text-center px-2">
+                    {uploading ? `${uploadProgress}%` : "Change Photo"}
+                  </span>
                 </div>
               </div>
 
               {uploading && (
                 <div className="mt-4 w-full max-w-xs">
-                  <div className="bg-[#cdd0c4] rounded-full h-2">
+                  <div className="bg-[#cdd0c4] rounded-full h-3 overflow-hidden">
                     <div
-                      className="bg-gradient-to-r from-[#686f4b] to-[#424b1e] h-2 rounded-full transition-all duration-300"
+                      className="bg-gradient-to-r from-[#686f4b] to-[#424b1e] h-3 rounded-full transition-all duration-500 ease-out"
                       style={{ width: `${uploadProgress}%` }}
                     ></div>
                   </div>
@@ -265,16 +287,26 @@ export default function Profile() {
                 </div>
               )}
 
-              {!uploading && uploadProgress === 100 && !uploadError && (
-                <p className="text-center text-green-600 font-semibold mt-2 bg-green-100 px-4 py-2 rounded-lg">
-                  Image Upload Successful!
-                </p>
+              {!uploading && uploadProgress > 0 && !uploadError && (
+                <div className="mt-4 text-center">
+                  <p className="text-green-600 font-semibold bg-green-100 px-4 py-2 rounded-lg border border-green-300">
+                    ✓ Profile picture updated successfully!
+                  </p>
+                </div>
               )}
 
               {uploadError && (
-                <p className="text-center text-red-600 font-semibold mt-2 bg-red-100 px-4 py-2 rounded-lg">
-                  {uploadError}
-                </p>
+                <div className="mt-4 text-center max-w-md">
+                  <p className="text-red-600 font-semibold bg-red-100 px-4 py-2 rounded-lg border border-red-300">
+                    ✗ {uploadError}
+                  </p>
+                  <button
+                    onClick={() => fileRef.current.click()}
+                    className="mt-2 text-sm text-[#686f4b] hover:text-[#424b1e] underline"
+                  >
+                    Try uploading again
+                  </button>
+                </div>
               )}
             </div>
 
