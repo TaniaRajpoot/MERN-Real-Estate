@@ -214,9 +214,11 @@ export default function Home() {
                   </svg>
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 items-stretch">
                 {offerListings.map((listing) => (
-                  <ListingItem listing={listing} key={listing._id} />
+                  <div key={listing._id} className="flex">
+                    <ListingItem listing={listing} />
+                  </div>
                 ))}
               </div>
             </div>
@@ -256,9 +258,11 @@ export default function Home() {
                   </svg>
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 items-stretch">
                 {rentListings.map((listing) => (
-                  <ListingItem listing={listing} key={listing._id} />
+                  <div key={listing._id} className="flex">
+                    <ListingItem listing={listing} />
+                  </div>
                 ))}
               </div>
             </div>
@@ -302,9 +306,11 @@ export default function Home() {
                   </svg>
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 items-stretch">
                 {saleListings.map((listing) => (
-                  <ListingItem listing={listing} key={listing._id} />
+                  <div key={listing._id} className="flex">
+                    <ListingItem listing={listing} />
+                  </div>
                 ))}
               </div>
             </div>
