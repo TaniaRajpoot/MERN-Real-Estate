@@ -235,6 +235,13 @@ export default function Profile() {
     }
   }
 
+  const handleImageClick = () => {
+    if (!uploading && fileRef.current) {
+      console.log("[v0] Triggering file input click")
+      fileRef.current.click()
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#d7d9d0] to-[#cdd0c4] py-8">
       <div className="max-w-4xl mx-auto px-4">
@@ -249,7 +256,7 @@ export default function Profile() {
               <input
                 type="file"
                 ref={fileRef}
-                hidden
+                style={{ display: "none" }}
                 accept="image/*"
                 onChange={handleUpload}
                 key={`file-input-${Date.now()}`}
@@ -257,7 +264,7 @@ export default function Profile() {
               <div className="relative group">
                 <img
                   key={`avatar-${avatar}-${Date.now()}`}
-                  onClick={() => !uploading && fileRef.current.click()}
+                  onClick={handleImageClick}
                   src={avatar || currentUser?.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                   onError={(e) => {
                     console.log("[v0] Image load error, using fallback")
@@ -268,8 +275,11 @@ export default function Profile() {
                     uploading ? "cursor-not-allowed opacity-70" : "cursor-pointer"
                   }`}
                 />
-                <div className="absolute inset-0 rounded-full bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <span className="text-white font-semibold text-sm text-center px-2">
+                <div
+                  className="absolute inset-0 rounded-full bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
+                  onClick={handleImageClick}
+                >
+                  <span className="text-white font-semibold text-sm text-center px-2 pointer-events-none">
                     {uploading ? `${uploadProgress}%` : "Change Photo"}
                   </span>
                 </div>
@@ -301,7 +311,7 @@ export default function Profile() {
                     ✗ {uploadError}
                   </p>
                   <button
-                    onClick={() => fileRef.current.click()}
+                    onClick={handleImageClick}
                     className="mt-2 text-sm text-[#686f4b] hover:text-[#424b1e] underline"
                   >
                     Try uploading again
