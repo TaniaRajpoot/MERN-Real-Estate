@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+
 export default function About() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#d7d9d0] to-[#cdd0c4] py-12">
@@ -69,9 +71,12 @@ export default function About() {
             <h2 className="text-3xl font-bold mb-4">Ready to Find Your Dream Home?</h2>
             <p className="text-xl text-white/90 mb-6">Let our expert team help you navigate the real estate market</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-[#424b1e] px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg transform hover:scale-105">
+              <Link
+                to="/search"
+                className="bg-white text-[#424b1e] px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg transform hover:scale-105 inline-block"
+              >
                 Browse Properties
-              </button>
+              </Link>
               <button className="bg-[#9ea38c] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#868c6f] transition-colors shadow-lg transform hover:scale-105">
                 Contact Us
               </button>

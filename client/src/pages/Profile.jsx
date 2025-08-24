@@ -64,29 +64,47 @@ export default function Profile() {
 
     const formData = new FormData()
     formData.append("file", file)
-    formData.append("upload_preset", "ml_default") // Using default preset that should work
+    formData.append("upload_preset", "unsigned_preset") // Using unsigned preset
+    formData.append("cloud_name", "demo")
 
     try {
+      console.log("[v0] Starting image upload...")
       const res = await axios.post("https://api.cloudinary.com/v1_1/demo/image/upload", formData, {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
           setUploadProgress(percentCompleted)
+          console.log("[v0] Upload progress:", percentCompleted + "%")
         },
       })
 
+      console.log("[v0] Upload response:", res.data)
       const imageUrl = res.data.secure_url
-      dispatch(updateUserAvatar(imageUrl))
+
       setAvatar(imageUrl)
 
+      dispatch(updateUserAvatar(imageUrl))
+      console.log("[v0] Redux state updated with new avatar")
+
       if (currentUser._id) {
+        console.log("[v0] Saving to Firebase...")
         await saveAvatarUrlToFirebase(currentUser._id, imageUrl)
+        console.log("[v0] Firebase update completed")
       }
 
       setUploadError("")
-      setTimeout(() => setUploadProgress(0), 2000) // Reset progress after 2 seconds
+      setTimeout(() => setUploadProgress(0), 2000)
+      console.log("[v0] Profile picture upload completed successfully")
     } catch (error) {
-      console.error("Upload failed:", error)
-      setUploadError("Upload failed. Please try again or check your internet connection.")
+      console.error("[v0] Upload failed:", error)
+      console.error("[v0] Error details:", error.response?.data || error.message)
+
+      if (error.response?.status === 400) {
+        setUploadError("Invalid image file. Please try a different image.")
+      } else if (error.response?.status === 413) {
+        setUploadError("Image file is too large. Please choose a smaller image.")
+      } else {
+        setUploadError("Upload failed. Please try again or check your internet connection.")
+      }
     } finally {
       setUploading(false)
     }
@@ -220,16 +238,18 @@ export default function Profile() {
               <input type="file" ref={fileRef} hidden accept="image/*" onChange={handleUpload} />
               <div className="relative group">
                 <img
+                  key={avatar}
                   onClick={() => fileRef.current.click()}
-                  src={avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                  src={avatar || currentUser?.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                   onError={(e) => {
+                    console.log("[v0] Image load error, using fallback")
                     e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                   }}
                   alt="profile"
                   className="rounded-full h-32 w-32 object-cover cursor-pointer border-4 border-[#9ea38c] shadow-lg group-hover:border-[#686f4b] transition-all duration-300"
                 />
                 <div className="absolute inset-0 rounded-full bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <span className="text-white font-semibold">Change</span>
+                  <span className="text-white font-semibold">{uploading ? "Uploading..." : "Change Photo"}</span>
                 </div>
               </div>
 
