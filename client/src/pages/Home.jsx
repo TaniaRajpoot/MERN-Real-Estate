@@ -196,7 +196,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h2 className="text-3xl font-bold text-[#2f380f] mb-2">Recent Offers</h2>
-                    <p className="text-[#686f4b] font-medium">🔥 Don't miss out on these amazing deals</p>
+                    <p className="text-[#686f4b] font-medium"> Don't miss out on these amazing deals</p>
                   </div>
                 </div>
                 <Link
@@ -240,7 +240,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h2 className="text-3xl font-bold text-[#2f380f] mb-2">For Rent</h2>
-                    <p className="text-[#686f4b] font-medium">🏠 Find your perfect rental home</p>
+                    <p className="text-[#686f4b] font-medium"> Find your perfect rental home</p>
                   </div>
                 </div>
                 <Link
@@ -288,7 +288,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h2 className="text-3xl font-bold text-[#2f380f] mb-2">For Sale</h2>
-                    <p className="text-[#686f4b] font-medium">🔑 Invest in your dream property</p>
+                    <p className="text-[#686f4b] font-medium"> Invest in your dream property</p>
                   </div>
                 </div>
                 <Link
