@@ -126,7 +126,7 @@ export default function Search() {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-white">
       {/* Sidebar */}
-      <div className="w-full lg:w-80 xl:w-96 p-3 sm:p-4 lg:p-5 border-b-2 lg:border-r-2 lg:border-b-0 lg:min-h-screen bg-gray-50">
+      <div className="w-full lg:w-90 xl:w-96 p-3 sm:p-4 lg:p-5 border-b-2 lg:border-r-2 lg:border-b-0 lg:min-h-screen bg-gray-50">
         <div className="mb-6">
           <h2 className="text-xl sm:text-2xl font-bold text-[#424b1e] mb-2">Search Filters</h2>
           <div className="w-16 h-1 bg-[#686f4b] rounded-full"></div>
@@ -134,19 +134,19 @@ export default function Search() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
           <div className="flex flex-col gap-2">
-            <label className="font-semibold text-[#424b1e] text-sm">Search Term:</label>
+            <label className="font-semibold text-[#424b1e] text-lg">Search Term:</label>
             <input
               type="text"
               id="searchTerm"
               placeholder="Search properties..."
-              className="border-2 border-gray-300 rounded-lg p-2.5 w-full focus:border-[#686f4b] focus:outline-none transition-colors bg-white text-[#424b1e] text-sm"
+              className="border-2 border-gray-300 rounded-lg p-2.5 w-full focus:border-[#686f4b] focus:outline-none transition-colors bg-white text-[#424b1e] text-lg"
               value={sidebardata.searchTerm}
               onChange={handleChange}
             />
           </div>
 
           <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-            <label className="font-semibold text-[#424b1e] text-sm block mb-3">Property Type:</label>
+            <label className="font-semibold text-[#424b1e] text-lg block mb-3">Property Type:</label>
             <div className="grid grid-cols-2 gap-2">
               <div className="flex gap-2 items-center">
                 <input
@@ -156,7 +156,7 @@ export default function Search() {
                   onChange={handleChange}
                   checked={sidebardata.type === "all"}
                 />
-                <span className="text-[#424b1e] font-medium text-xs">Rent & Sale</span>
+                <span className="text-[#424b1e] font-medium text-sm">Rent & Sale</span>
               </div>
               <div className="flex gap-2 items-center">
                 <input
@@ -166,7 +166,7 @@ export default function Search() {
                   onChange={handleChange}
                   checked={sidebardata.type === "rent"}
                 />
-                <span className="text-[#424b1e] font-medium text-xs">Rent</span>
+                <span className="text-[#424b1e] font-medium text-sm">Rent</span>
               </div>
               <div className="flex gap-2 items-center">
                 <input
@@ -176,7 +176,7 @@ export default function Search() {
                   onChange={handleChange}
                   checked={sidebardata.type === "sale"}
                 />
-                <span className="text-[#424b1e] font-medium text-xs">Sale</span>
+                <span className="text-[#424b1e] font-medium text-sm">Sale</span>
               </div>
               <div className="flex gap-2 items-center">
                 <input
@@ -186,13 +186,13 @@ export default function Search() {
                   onChange={handleChange}
                   checked={sidebardata.offer}
                 />
-                <span className="text-[#424b1e] font-medium text-xs">Offer</span>
+                <span className="text-[#424b1e] font-medium text-sm">Offer</span>
               </div>
             </div>
           </div>
 
           <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-            <label className="font-semibold text-[#424b1e] text-sm block mb-3">Amenities:</label>
+            <label className="font-semibold text-[#424b1e] text-lg block mb-3">Amenities:</label>
             <div className="grid grid-cols-2 gap-2">
               <div className="flex gap-2 items-center">
                 <input
@@ -202,7 +202,7 @@ export default function Search() {
                   onChange={handleChange}
                   checked={sidebardata.parking}
                 />
-                <span className="text-[#424b1e] font-medium text-xs">Parking</span>
+                <span className="text-[#424b1e] font-medium text-sm">Parking</span>
               </div>
               <div className="flex gap-2 items-center">
                 <input
@@ -212,18 +212,18 @@ export default function Search() {
                   onChange={handleChange}
                   checked={sidebardata.furnished}
                 />
-                <span className="text-[#424b1e] font-medium text-xs">Furnished</span>
+                <span className="text-[#424b1e] font-medium text-sm">Furnished</span>
               </div>
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="font-semibold text-[#424b1e] text-sm">Sort by:</label>
+            <label className="font-semibold text-[#424b1e] text-lg">Sort by:</label>
             <select
               onChange={handleChange}
               defaultValue={"createdAt_desc"}
               id="sort_order"
-              className="border-2 border-gray-300 rounded-lg p-2.5 focus:border-[#686f4b] focus:outline-none transition-colors bg-white text-[#424b1e] text-sm"
+              className="border-2 border-gray-300 rounded-lg p-2.5 focus:border-[#686f4b] focus:outline-none transition-colors bg-white text-[#424b1e] text-lg"
             >
               <option value="regularPrice_desc">Price high to low</option>
               <option value="regularPrice_asc">Price low to high</option>

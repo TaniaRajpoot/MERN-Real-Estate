@@ -399,7 +399,7 @@ export default function Profile() {
 
           <button
             onClick={handleShowListings}
-            className="w-full mt-6 bg-gradient-to-r from-[#b1b5a3] to-[#9ea38c] text-[#424b1e] p-4 rounded-lg font-semibold hover:from-[#9ea38c] hover:to-[#686f4b] hover:text-white transition-all duration-300 shadow-lg transform hover:scale-105"
+            className="w-full text-xl mt-6 bg-gradient-to-r from-[#b1b5a3] to-[#9ea38c] text-[#424b1e] p-4 rounded-lg font-semibold hover:from-[#9ea38c] hover:to-[#686f4b] hover:text-white transition-all duration-300 shadow-lg transform hover:scale-105"
           >
             Show My Listings
           </button>
@@ -412,7 +412,7 @@ export default function Profile() {
 
           {userListings && userListings.length > 0 && (
             <div className="mt-8">
-              <div className="bg-gradient-to-r from-[#c1c4b5] to-[#b1b5a3] p-6 rounded-lg mb-6">
+              <div className="bg-white from-[#c1c4b5] to-[#b1b5a3] p-6 rounded-lg mb-6">
                 <h2 className="text-center text-2xl font-bold text-[#424b1e]">Your Property Listings</h2>
               </div>
 

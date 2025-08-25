@@ -51,36 +51,26 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#d7d9d0] to-[#cdd0c4]">
-      {/* Enhanced Hero Section */}
-      <div className="relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-[url('/images/pattern.png')] bg-repeat opacity-20"></div>
-        </div>
-
-        {/* Hero Content */}
-        <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8 p-4 sm:p-8 lg:p-28 px-4 sm:px-6 max-w-7xl mx-auto relative z-10">
-          <div className="space-y-3 sm:space-y-4 lg:space-y-6 animate-fade-in">
-            <h1 className="text-[#2f380f] font-bold text-2xl sm:text-3xl md:text-4xl lg:text-7xl leading-tight tracking-tight">
-              Find your next{" "}
-              <span className="text-[#686f4b] animate-pulse">
-                perfect
-              </span>
-              <br />
-              place with ease
-            </h1>
-
-            <div className="text-[#868c6f] text-sm sm:text-base lg:text-lg max-w-2xl leading-relaxed">
-              Taniva Estate is the best place to find your next perfect place to live.
-              <br />
-              We have a wide range of properties for you to choose from.
-            </div>
-          </div>
-
+      {/* Hero Section with Image on Right */}
+      <div className="relative overflow-hidden h-[80vh] sm:h-[90vh] lg:h-[100vh] flex flex-col lg:flex-row items-center justify-center max-w-7xl mx-auto p-4 sm:p-8 lg:p-12 gap-6 lg:gap-12">
+        
+        {/* Left Content */}
+        <div className="flex-1 flex flex-col gap-4 sm:gap-6 lg:gap-8 z-10">
+          <h1 className="text-[#2f380f] font-bold text-2xl sm:text-3xl lg:text-6xl leading-tight tracking-tight drop-shadow-lg">
+            Find your next{" "}
+            <span className="text-[#424b1e] animate-pulse">perfect</span>
+            <br />
+            place with ease
+          </h1>
+          <p className="text-[#2f380f]/90 text-sm sm:text-base lg:text-lg max-w-2xl leading-relaxed drop-shadow-md">
+            Taniva Estate is the best place to find your next perfect place to live.
+            <br />
+            We have a wide range of properties for you to choose from.
+          </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
             <Link
               to={"/search"}
-              className="group inline-flex items-center justify-center px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-[#686f4b] hover:bg-[#5c634a] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 text-sm sm:text-base"
+              className="group inline-flex items-center justify-center px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-[#686f4b] hover:bg-[#2f380f] text-[white] font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 text-sm sm:text-base"
             >
               <span>Start Your Search</span>
               <svg
@@ -95,30 +85,26 @@ export default function Home() {
 
             <Link
               to={"/about"}
-              className="inline-flex items-center justify-center px-4 sm:px-6 lg:px-8 py-3 sm:py-4 border-2 border-[#9ea38c] text-[#424b1e] font-semibold rounded-xl hover:bg-[#9ea38c] hover:text-white transition-all duration-300 text-sm sm:text-base"
+              className="inline-flex items-center justify-center px-4 sm:px-6 lg:px-8 py-3 sm:py-4 border-2 border-[#686f4b] text-[#2f380f] font-semibold rounded-xl hover:bg-[#686f4b] hover:text-white transition-all duration-300 text-sm sm:text-base"
             >
               Learn More
             </Link>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 pt-6 sm:pt-8 lg:pt-12">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#c1c4b5]">
-              <div className="text-2xl sm:text-3xl font-bold text-[#424b1e]">500+</div>
-              <div className="text-[#868c6f] text-xs sm:text-sm">Properties Listed</div>
-            </div>
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#c1c4b5]">
-              <div className="text-2xl sm:text-3xl font-bold text-[#424b1e]">200+</div>
-              <div className="text-[#868c6f] text-xs sm:text-sm">Happy Clients</div>
-            </div>
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-[#c1c4b5]">
-              <div className="text-2xl sm:text-3xl font-bold text-[#424b1e]">50+</div>
-              <div className="text-[#868c6f] text-xs sm:text-sm">Cities Covered</div>
-            </div>
-          </div>
+        {/* Right Image */}
+        <div className="flex-1 relative w-full h-[60vh] sm:h-[70vh] lg:h-[80vh] rounded-2xl overflow-hidden shadow-xl border border-[#c1c4b5]">
+          <div
+            className="absolute inset-0 bg-cover bg-center scale-110 animate-zoom-slow transition-transform duration-[120s]"
+            style={{
+              backgroundImage: "url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+            }}
+          ></div>
+          <div className="absolute inset-0 bg-black/20"></div>
         </div>
       </div>
 
-      {/* Enhanced Swiper Section */}
+      {/* Featured Properties Swiper */}
       <div className="relative py-8 sm:py-12 lg:py-16 bg-gradient-to-b from-[#cdd0c4] to-[#c1c4b5]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-8 sm:mb-12">
@@ -175,23 +161,17 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Enhanced Listing Sections */}
+      {/* Listing Sections: Offers, Rent, Sale */}
       <div className="max-w-7xl mx-auto p-4 sm:p-6 flex flex-col gap-8 sm:gap-12 lg:gap-16 my-8 sm:my-12 lg:my-16">
-        {offerListings && offerListings.length > 0 && (
+        {/* Recent Offers */}
+        {offerListings.length > 0 && (
           <div className="relative overflow-hidden bg-gradient-to-br from-[#d7d9d0] via-white to-[#cdd0c4] rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-xl border border-[#c1c4b5] hover:shadow-2xl transition-all duration-500">
-            <div className="absolute top-0 right-0 w-16 sm:w-24 lg:w-32 h-16 sm:h-24 lg:h-32 bg-gradient-to-br from-[#9ea38c]/20 to-transparent rounded-full -translate-y-8 sm:-translate-y-12 lg:-translate-y-16 translate-x-8 sm:translate-x-12 lg:translate-x-16"></div>
-            <div className="absolute bottom-0 left-0 w-12 sm:w-18 lg:w-24 h-12 sm:h-18 lg:h-24 bg-gradient-to-tr from-[#b1b5a3]/20 to-transparent rounded-full translate-y-6 sm:translate-y-9 lg:translate-y-12 -translate-x-6 sm:-translate-x-9 lg:-translate-x-12"></div>
-
             <div className="relative z-10">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
                 <div className="flex items-center gap-3 sm:gap-4">
                   <div className="w-8 sm:w-10 lg:w-12 h-8 sm:h-10 lg:h-12 bg-[#686f4b] rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
                     <svg className="w-4 sm:w-5 lg:w-6 h-4 sm:h-5 lg:h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        fillRule="evenodd"
-                        d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
-                        clipRule="evenodd"
-                      />
+                      <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd"/>
                     </svg>
                   </div>
                   <div>
@@ -200,16 +180,11 @@ export default function Home() {
                   </div>
                 </div>
                 <Link
-                  className="group bg-[#9ea38c] hover:bg-[#8c9280] text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-xl sm:rounded-2xl font-semibold hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 flex items-center gap-2 text-xs sm:text-sm lg:text-base w-full sm:w-auto justify-center"
+                  className="group bg-[#686f4b] hover:bg-[#8c9280] text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-xl sm:rounded-2xl font-semibold hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 flex items-center gap-2 text-xs sm:text-sm lg:text-base w-full sm:w-auto justify-center"
                   to={"/search?offer=true"}
                 >
                   <span>View All Offers</span>
-                  <svg
-                    className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform duration-300"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </Link>
@@ -225,11 +200,9 @@ export default function Home() {
           </div>
         )}
 
-        {rentListings && rentListings.length > 0 && (
+        {/* Rent Listings */}
+        {rentListings.length > 0 && (
           <div className="relative overflow-hidden bg-gradient-to-br from-[#cdd0c4] via-white to-[#c1c4b5] rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-xl border border-[#b1b5a3] hover:shadow-2xl transition-all duration-500">
-            <div className="absolute top-0 left-0 w-20 sm:w-30 lg:w-40 h-20 sm:h-30 lg:h-40 bg-gradient-to-br from-[#b1b5a3]/15 to-transparent rounded-full -translate-y-10 sm:-translate-y-15 lg:-translate-y-20 -translate-x-10 sm:-translate-x-15 lg:-translate-x-20"></div>
-            <div className="absolute bottom-0 right-0 w-14 sm:w-21 lg:w-28 h-14 sm:h-21 lg:h-28 bg-gradient-to-tl from-[#9ea38c]/15 to-transparent rounded-full translate-y-7 sm:translate-y-10.5 lg:translate-y-14 translate-x-7 sm:translate-x-10.5 lg:translate-x-14"></div>
-
             <div className="relative z-10">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
                 <div className="flex items-center gap-3 sm:gap-4">
@@ -244,16 +217,11 @@ export default function Home() {
                   </div>
                 </div>
                 <Link
-                  className="group bg-[#b1b5a3] hover:bg-[#a0a597] text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-xl sm:rounded-2xl font-semibold hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 flex items-center gap-2 text-xs sm:text-sm lg:text-base w-full sm:w-auto justify-center"
+                  className="group bg-[#686f4b] hover:bg-[#8c9280] text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-xl sm:rounded-2xl font-semibold hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 flex items-center gap-2 text-xs sm:text-sm lg:text-base w-full sm:w-auto justify-center"
                   to={"/search?type=rent"}
                 >
                   <span>View All Rentals</span>
-                  <svg
-                    className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform duration-300"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </Link>
@@ -269,39 +237,27 @@ export default function Home() {
           </div>
         )}
 
-        {saleListings && saleListings.length > 0 && (
+        {/* Sale Listings */}
+        {saleListings.length > 0 && (
           <div className="relative overflow-hidden bg-gradient-to-br from-[#c1c4b5] via-white to-[#b1b5a3] rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-xl border border-[#9ea38c] hover:shadow-2xl transition-all duration-500">
-            <div className="absolute top-0 right-0 w-18 sm:w-27 lg:w-36 h-18 sm:h-27 lg:h-36 bg-gradient-to-bl from-[#868c6f]/20 to-transparent rounded-full -translate-y-9 sm:-translate-y-13.5 lg:-translate-y-18 translate-x-9 sm:translate-x-13.5 lg:translate-x-18"></div>
-            <div className="absolute bottom-0 left-0 w-16 sm:w-24 lg:w-32 h-16 sm:h-24 lg:h-32 bg-gradient-to-tr from-[#686f4b]/15 to-transparent rounded-full translate-y-8 sm:translate-y-12 lg:translate-y-16 -translate-x-8 sm:-translate-x-12 lg:-translate-x-16"></div>
-
             <div className="relative z-10">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
                 <div className="flex items-center gap-3 sm:gap-4">
                   <div className="w-8 sm:w-10 lg:w-12 h-8 sm:h-10 lg:h-12 bg-[#868c6f] rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
-                    <svg className="w-4 sm:w-5 lg:w-6 h-4 sm:h-5 lg:h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        fillRule="evenodd"
-                        d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z"
-                        clipRule="evenodd"
-                      />
+                    <svg className="w-4 sm:w-5 lg:w-6 h-4 sm:h-5 lg:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14a6 6 0 110-12 6 6 0 018 6zm-6 0a4 4 0 100-8 4 4 0 000 8z" clipRule="evenodd" />
                     </svg>
                   </div>
                   <div>
                     <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#2f380f] mb-1 sm:mb-2">For Sale</h2>
-                    <p className="text-[#686f4b] font-medium text-xs sm:text-sm lg:text-base">Invest in your dream property</p>
+                    <p className="text-[#686f4b] font-medium text-xs sm:text-sm lg:text-base">Premium properties for sale</p>
                   </div>
                 </div>
                 <Link
-                  className="group bg-[#868c6f] hover:bg-[#757c62] text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-xl sm:rounded-2xl font-semibold hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 flex items-center gap-2 text-xs sm:text-sm lg:text-base w-full sm:w-auto justify-center"
-                  to={"/search?type=sale"}
+                className="group bg-[#686f4b] hover:bg-[#8c9280] text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-xl sm:rounded-2xl font-semibold hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 flex items-center gap-2 text-xs sm:text-sm lg:text-base w-full sm:w-auto justify-center"                  to={"/search?type=sale"}
                 >
                   <span>View All Sales</span>
-                  <svg
-                    className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform duration-300"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </Link>
@@ -317,6 +273,20 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* Tailwind Zoom Animation */}
+      <style>
+        {`
+          @keyframes zoom-slow {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1.1); }
+          }
+          .animate-zoom-slow {
+            animation: zoom-slow 120s ease-in-out infinite;
+          }
+        `}
+      </style>
     </div>
   )
 }

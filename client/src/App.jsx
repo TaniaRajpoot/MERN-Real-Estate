@@ -13,13 +13,13 @@ import UpdateListing from './pages/UpdateListing';
 import Listing from './pages/Listing';
 import Search from './pages/Search';
 import Footer from './components/Footer';
-import { SearchProvider } from './context/SearchContext';
+
 
 function App() {
   return (
     <BrowserRouter>
       <Header />
-      <SearchProvider>
+     
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<SignIn />} />
@@ -34,7 +34,7 @@ function App() {
           <Route path="/update-listing/:listingId" element={<UpdateListing />} />
         </Route>
       </Routes>
-      </SearchProvider>
+    
         <Footer />
     </BrowserRouter>
   );
