@@ -14,19 +14,22 @@ export default function Header() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const urlParams = new URLSearchParams(window.location.search)
-    urlParams.set("searchTerm", searchTerm)
-    const searchQuery = urlParams.toString()
-    navigate(`/search?${searchQuery}`)
+    const urlParams = new URLSearchParams()
+    if (searchTerm) urlParams.set("searchTerm", searchTerm)
+    navigate(`/search?${urlParams.toString()}`)
+  }
+
+  // Redirect to search page with property type
+  const handlePropertiesClick = () => {
+    const urlParams = new URLSearchParams()
+    urlParams.set("type", "all") // property type filter
+    navigate(`/search?${urlParams.toString()}`)
   }
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search)
     const searchTermFromUrl = urlParams.get("searchTerm")
-
-    if (searchTermFromUrl) {
-      setSearchTerm(searchTermFromUrl)
-    }
+    if (searchTermFromUrl) setSearchTerm(searchTermFromUrl)
   }, [location.search])
 
   return (
@@ -50,9 +53,7 @@ export default function Header() {
             placeholder="Search..."
             className="bg-transparent focus:outline-none w-20 xs:w-28 sm:w-40 md:w-56 lg:w-72 text-[#2f380f] placeholder-[#686f4b]/70 font-medium px-1 sm:px-2 transition-all duration-300 text-sm sm:text-base"
             value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value)
-            }}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button
             type="submit"
@@ -70,14 +71,22 @@ export default function Header() {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#686f4b] group-hover:w-full transition-all duration-300 ease-out"></span>
             </li>
           </Link>
-          
+
           <Link to="/about" className="group hidden md:block">
             <li className="text-[#424b1e] hover:text-[#2f380f] font-medium transition-all duration-300 ease-out relative text-sm lg:text-base">
               <span className="group-hover:drop-shadow-sm">About</span>
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#686f4b] group-hover:w-full transition-all duration-300 ease-out"></span>
             </li>
           </Link>
-          
+
+          {/* Properties Link */}
+          <li
+            onClick={handlePropertiesClick}
+            className="cursor-pointer text-[#424b1e] hover:text-[#2f380f] font-medium transition-all duration-300 ease-out relative text-sm lg:text-base"
+          >
+            Properties
+          </li>
+
           <Link to={currentUser ? "/profile" : "/sign-in"} className="group">
             {currentUser ? (
               <img
@@ -86,9 +95,7 @@ export default function Header() {
                     ? currentUser.avatar
                     : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                 }
-                onError={(e) => {
-                  e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                }}
+                onError={(e) => { e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png" }}
                 alt="profile"
                 className="w-8 h-8 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full object-cover border-2 border-[#424b1e]/80 hover:border-[#2f380f] transition-all duration-500 ease-out hover:scale-110 shadow-lg hover:shadow-xl ring-2 ring-transparent hover:ring-[#686f4b]/30"
               />
