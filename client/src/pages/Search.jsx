@@ -124,109 +124,106 @@ export default function Search() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-[#d7d9d0] to-[#cdd0c4]">
-      <div className="p-7 border-b-2 md:border-r-2 md:min-h-screen bg-gradient-to-b from-[#c1c4b5] to-[#b1b5a3] backdrop-blur-sm shadow-xl">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-white">
+      {/* Sidebar */}
+      <div className="w-full lg:w-80 xl:w-96 p-3 sm:p-4 lg:p-5 border-b-2 lg:border-r-2 lg:border-b-0 lg:min-h-screen bg-gray-50">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-[#424b1e] mb-2">Search Filters</h2>
-          <div className="w-16 h-1 bg-gradient-to-r from-[#686f4b] to-[#424b1e] rounded-full"></div>
+          <h2 className="text-xl sm:text-2xl font-bold text-[#424b1e] mb-2">Search Filters</h2>
+          <div className="w-16 h-1 bg-[#686f4b] rounded-full"></div>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-          <div className="flex items-center gap-2">
-            <label className="whitespace-nowrap font-semibold text-[#424b1e]">Search Term:</label>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
+          <div className="flex flex-col gap-2">
+            <label className="font-semibold text-[#424b1e] text-sm">Search Term:</label>
             <input
               type="text"
               id="searchTerm"
               placeholder="Search properties..."
-              className="border-2 border-[#9ea38c] rounded-lg p-3 w-full focus:border-[#686f4b] focus:outline-none transition-colors bg-white/80 backdrop-blur-sm"
+              className="border-2 border-gray-300 rounded-lg p-2.5 w-full focus:border-[#686f4b] focus:outline-none transition-colors bg-white text-[#424b1e] text-sm"
               value={sidebardata.searchTerm}
               onChange={handleChange}
             />
           </div>
 
-          <div className="bg-white/50 backdrop-blur-sm rounded-lg p-4 border border-[#9ea38c]">
-            <div className="flex gap-2 flex-wrap items-center">
-              <label className="font-semibold text-[#424b1e] mb-2">Property Type:</label>
-              <div className="flex flex-wrap gap-4">
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="all"
-                    className="w-5 h-5 accent-[#686f4b]"
-                    onChange={handleChange}
-                    checked={sidebardata.type === "all"}
-                  />
-                  <span className="text-[#424b1e] font-medium">Rent & Sale</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="rent"
-                    className="w-5 h-5 accent-[#686f4b]"
-                    onChange={handleChange}
-                    checked={sidebardata.type === "rent"}
-                  />
-                  <span className="text-[#424b1e] font-medium">Rent</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="sale"
-                    className="w-5 h-5 accent-[#686f4b]"
-                    onChange={handleChange}
-                    checked={sidebardata.type === "sale"}
-                  />
-                  <span className="text-[#424b1e] font-medium">Sale</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="offer"
-                    className="w-5 h-5 accent-[#686f4b]"
-                    onChange={handleChange}
-                    checked={sidebardata.offer}
-                  />
-                  <span className="text-[#424b1e] font-medium">Special Offer</span>
-                </div>
+          <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+            <label className="font-semibold text-[#424b1e] text-sm block mb-3">Property Type:</label>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex gap-2 items-center">
+                <input
+                  type="checkbox"
+                  id="all"
+                  className="w-4 h-4 accent-[#686f4b]"
+                  onChange={handleChange}
+                  checked={sidebardata.type === "all"}
+                />
+                <span className="text-[#424b1e] font-medium text-xs">Rent & Sale</span>
+              </div>
+              <div className="flex gap-2 items-center">
+                <input
+                  type="checkbox"
+                  id="rent"
+                  className="w-4 h-4 accent-[#686f4b]"
+                  onChange={handleChange}
+                  checked={sidebardata.type === "rent"}
+                />
+                <span className="text-[#424b1e] font-medium text-xs">Rent</span>
+              </div>
+              <div className="flex gap-2 items-center">
+                <input
+                  type="checkbox"
+                  id="sale"
+                  className="w-4 h-4 accent-[#686f4b]"
+                  onChange={handleChange}
+                  checked={sidebardata.type === "sale"}
+                />
+                <span className="text-[#424b1e] font-medium text-xs">Sale</span>
+              </div>
+              <div className="flex gap-2 items-center">
+                <input
+                  type="checkbox"
+                  id="offer"
+                  className="w-4 h-4 accent-[#686f4b]"
+                  onChange={handleChange}
+                  checked={sidebardata.offer}
+                />
+                <span className="text-[#424b1e] font-medium text-xs">Offer</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white/50 backdrop-blur-sm rounded-lg p-4 border border-[#9ea38c]">
-            <div className="flex gap-2 flex-wrap items-center">
-              <label className="font-semibold text-[#424b1e] mb-2">Amenities:</label>
-              <div className="flex flex-wrap gap-4">
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="parking"
-                    className="w-5 h-5 accent-[#686f4b]"
-                    onChange={handleChange}
-                    checked={sidebardata.parking}
-                  />
-                  <span className="text-[#424b1e] font-medium">Parking</span>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="checkbox"
-                    id="furnished"
-                    className="w-5 h-5 accent-[#686f4b]"
-                    onChange={handleChange}
-                    checked={sidebardata.furnished}
-                  />
-                  <span className="text-[#424b1e] font-medium">Furnished</span>
-                </div>
+          <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
+            <label className="font-semibold text-[#424b1e] text-sm block mb-3">Amenities:</label>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex gap-2 items-center">
+                <input
+                  type="checkbox"
+                  id="parking"
+                  className="w-4 h-4 accent-[#686f4b]"
+                  onChange={handleChange}
+                  checked={sidebardata.parking}
+                />
+                <span className="text-[#424b1e] font-medium text-xs">Parking</span>
+              </div>
+              <div className="flex gap-2 items-center">
+                <input
+                  type="checkbox"
+                  id="furnished"
+                  className="w-4 h-4 accent-[#686f4b]"
+                  onChange={handleChange}
+                  checked={sidebardata.furnished}
+                />
+                <span className="text-[#424b1e] font-medium text-xs">Furnished</span>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <label className="font-semibold text-[#424b1e]">Sort by:</label>
+          <div className="flex flex-col gap-2">
+            <label className="font-semibold text-[#424b1e] text-sm">Sort by:</label>
             <select
               onChange={handleChange}
               defaultValue={"createdAt_desc"}
               id="sort_order"
-              className="border-2 border-[#9ea38c] rounded-lg p-3 focus:border-[#686f4b] focus:outline-none transition-colors bg-white/80 backdrop-blur-sm text-[#424b1e]"
+              className="border-2 border-gray-300 rounded-lg p-2.5 focus:border-[#686f4b] focus:outline-none transition-colors bg-white text-[#424b1e] text-sm"
             >
               <option value="regularPrice_desc">Price high to low</option>
               <option value="regularPrice_asc">Price low to high</option>
@@ -235,38 +232,50 @@ export default function Search() {
             </select>
           </div>
 
-          <button className="bg-gradient-to-r from-[#686f4b] to-[#424b1e] text-white p-4 rounded-lg uppercase hover:from-[#424b1e] hover:to-[#2f380f] transition-all duration-300 font-semibold shadow-lg transform hover:scale-105">
+          <button className="bg-[#686f4b] text-white p-2.5 rounded-lg hover:bg-[#424b1e] transition-colors duration-300 font-semibold shadow-lg text-sm">
             Search Properties
           </button>
         </form>
       </div>
 
-      <div className="flex-1 bg-white/30 backdrop-blur-sm">
-        <div className="bg-gradient-to-r from-[#686f4b] to-[#424b1e] text-white p-6 shadow-lg">
-          <h1 className="text-3xl font-bold">Search Results</h1>
-          <p className="text-white/80 mt-2">Find your perfect property</p>
+      {/* Main Content */}
+      <div className="flex-1 bg-white">
+        <div className="bg- text-white p-4 sm:p-6 shadow-lg">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#686f4b]">Search Results</h1>
+          <p className="text-[#686f4b]/90 mt-2 text-sm sm:text-base">Find your perfect property</p>
         </div>
 
-        <div className="p-7">
+        <div className="p-4 sm:p-6 lg:p-7">
           {!loading && listings.length === 0 && (
-            <div className="text-center py-16">
-              <p className="text-2xl text-[#424b1e] font-semibold mb-2">No properties found!</p>
-              <p className="text-[#686f4b]">Try adjusting your search filters</p>
+            <div className="text-center py-12 sm:py-16">
+              <div className="max-w-md mx-auto">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 sm:w-10 sm:h-10 text-[#686f4b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                  </svg>
+                </div>
+                <p className="text-xl sm:text-2xl text-[#424b1e] font-semibold mb-2">No properties found!</p>
+                <p className="text-[#686f4b] text-sm sm:text-base">Try adjusting your search filters to find more properties</p>
+              </div>
             </div>
           )}
 
           {loading && (
-            <div className="text-center py-16">
-              <p className="text-2xl text-[#424b1e] font-semibold">Loading amazing properties...</p>
+            <div className="text-center py-12 sm:py-16">
+              <div className="max-w-md mx-auto">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-[#686f4b]/20 border-t-[#686f4b] rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-xl sm:text-2xl text-[#424b1e] font-semibold">Loading properties...</p>
+                <p className="text-[#686f4b] mt-2 text-sm sm:text-base">Please wait while we find the best matches</p>
+              </div>
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
             {!loading &&
               listings &&
               listings.map((listing) => (
-                <div key={listing._id} className="flex">
-                  <div className="w-full transform hover:scale-105 transition-transform duration-300">
+                <div key={listing._id} className="w-full">
+                  <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105">
                     <ListingItem listing={listing} />
                   </div>
                 </div>
@@ -274,10 +283,10 @@ export default function Search() {
           </div>
 
           {showMore && (
-            <div className="text-center mt-8">
+            <div className="text-center mt-6 sm:mt-8">
               <button
                 onClick={onShowMoreClick}
-                className="bg-gradient-to-r from-[#9ea38c] to-[#686f4b] text-white px-8 py-4 rounded-lg hover:from-[#686f4b] hover:to-[#424b1e] transition-all duration-300 font-semibold shadow-lg transform hover:scale-105"
+                className="bg-[#686f4b] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-[#424b1e] transition-colors duration-300 font-semibold shadow-lg text-sm sm:text-base"
               >
                 Load More Properties
               </button>
