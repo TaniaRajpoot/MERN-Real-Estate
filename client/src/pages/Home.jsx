@@ -10,50 +10,55 @@ import "swiper/css/effect-fade"
 import ListingItem from "../components/ListingItem"
 
 export default function Home() {
+  const [recentListings, setRecentListings] = useState([]) // Featured Properties
   const [offerListings, setOfferListings] = useState([])
   const [saleListings, setSaleListings] = useState([])
   const [rentListings, setRentListings] = useState([])
+
   SwiperCore.use([Navigation, Autoplay, EffectFade])
 
   useEffect(() => {
-    const fetchOfferListings = async () => {
+    const fetchListings = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/listing/get?offer=true&limit=4`)
-        const data = await res.json()
-        setOfferListings(data)
-        fetchRentListings()
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    const fetchRentListings = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/listing/get?type=rent&limit=4`)
-        const data = await res.json()
-        setRentListings(data)
-        fetchSaleListings()
+        // Featured Properties
+        const recentRes = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/listing/get?sort=createdAt&order=desc&limit=4`
+        )
+        const recentData = await recentRes.json()
+        setRecentListings(recentData)
+
+        // Recent Offers
+        const offerRes = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/listing/get?offer=true&sort=createdAt&order=desc&limit=4`
+        )
+        const offerData = await offerRes.json()
+        setOfferListings(offerData)
+
+        // Recent Rent Listings
+        const rentRes = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/listing/get?type=rent&sort=createdAt&order=desc&limit=4`
+        )
+        const rentData = await rentRes.json()
+        setRentListings(rentData)
+
+        // Recent Sale Listings
+        const saleRes = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/listing/get?type=sale&sort=createdAt&order=desc&limit=4`
+        )
+        const saleData = await saleRes.json()
+        setSaleListings(saleData)
       } catch (error) {
         console.log(error)
       }
     }
 
-    const fetchSaleListings = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/listing/get?type=sale&limit=4`)
-        const data = await res.json()
-        setSaleListings(data)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    fetchOfferListings()
+    fetchListings()
   }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#d7d9d0] to-[#cdd0c4]">
-      {/* Hero Section with Image on Right */}
+      {/* Hero Section */}
       <div className="relative overflow-hidden h-[80vh] sm:h-[90vh] lg:h-[100vh] flex flex-col lg:flex-row items-center justify-center max-w-7xl mx-auto p-4 sm:p-8 lg:p-12 gap-6 lg:gap-12">
-        
         {/* Left Content */}
         <div className="flex-1 flex flex-col gap-4 sm:gap-6 lg:gap-8 z-10">
           <h1 className="text-[#2f380f] font-bold text-2xl sm:text-3xl lg:text-6xl leading-tight tracking-tight drop-shadow-lg">
@@ -70,7 +75,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
             <Link
               to={"/search"}
-              className="group inline-flex items-center justify-center px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-[#686f4b] hover:bg-[#2f380f] text-[white] font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 text-sm sm:text-base"
+              className="group inline-flex items-center justify-center px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-[#686f4b] hover:bg-[#2f380f] text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 text-sm sm:text-base"
             >
               <span>Start Your Search</span>
               <svg
@@ -97,7 +102,8 @@ export default function Home() {
           <div
             className="absolute inset-0 bg-cover bg-center scale-110 animate-zoom-slow transition-transform duration-[120s]"
             style={{
-              backgroundImage: "url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+              backgroundImage:
+                "url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
             }}
           ></div>
           <div className="absolute inset-0 bg-black/20"></div>
@@ -109,28 +115,24 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2f380f] mb-2 sm:mb-4">Featured Properties</h2>
-            <p className="text-[#686f4b] text-sm sm:text-base lg:text-lg">Discover our handpicked selection of premium properties</p>
+            <p className="text-[#686f4b] text-sm sm:text-base lg:text-lg">Discover our latest listings</p>
           </div>
 
           <div className="rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl">
             <Swiper
               navigation
-              autoplay={{
-                delay: 4000,
-                disableOnInteraction: false,
-              }}
+              autoplay={{ delay: 4000, disableOnInteraction: false }}
               effect="fade"
               fadeEffect={{ crossFade: true }}
               className="h-[300px] sm:h-[400px] lg:h-[600px]"
             >
-              {offerListings &&
-                offerListings.length > 0 &&
-                offerListings.map((listing) => (
+              {recentListings.length > 0 &&
+                recentListings.map((listing) => (
                   <SwiperSlide key={listing._id}>
                     <div className="relative h-full">
                       <div
                         style={{
-                          background: `url(${listing.imageUrls[0]}) center no-repeat`,
+                          background: `url(${listing.imageUrls?.[0] || 'https://via.placeholder.com/600x400'}) center no-repeat`,
                           backgroundSize: "cover",
                         }}
                         className="h-full"
@@ -161,7 +163,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Listing Sections: Offers, Rent, Sale */}
+      {/* Offer, Rent, Sale Sections */}
       <div className="max-w-7xl mx-auto p-4 sm:p-6 flex flex-col gap-8 sm:gap-12 lg:gap-16 my-8 sm:my-12 lg:my-16">
         {/* Recent Offers */}
         {offerListings.length > 0 && (
@@ -200,7 +202,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* Rent Listings */}
+        {/* Rent Section */}
         {rentListings.length > 0 && (
           <div className="relative overflow-hidden bg-gradient-to-br from-[#cdd0c4] via-white to-[#c1c4b5] rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-xl border border-[#b1b5a3] hover:shadow-2xl transition-all duration-500">
             <div className="relative z-10">
@@ -237,24 +239,25 @@ export default function Home() {
           </div>
         )}
 
-        {/* Sale Listings */}
+        {/* Sale Section */}
         {saleListings.length > 0 && (
           <div className="relative overflow-hidden bg-gradient-to-br from-[#c1c4b5] via-white to-[#b1b5a3] rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-xl border border-[#9ea38c] hover:shadow-2xl transition-all duration-500">
             <div className="relative z-10">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
                 <div className="flex items-center gap-3 sm:gap-4">
                   <div className="w-8 sm:w-10 lg:w-12 h-8 sm:h-10 lg:h-12 bg-[#868c6f] rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
-                    <svg className="w-4 sm:w-5 lg:w-6 h-4 sm:h-5 lg:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14a6 6 0 110-12 6 6 0 018 6zm-6 0a4 4 0 100-8 4 4 0 000 8z" clipRule="evenodd" />
+                    <svg className="w-4 sm:w-5 lg:w-6 h-4 sm:h-5 lg:h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                     </svg>
                   </div>
                   <div>
                     <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#2f380f] mb-1 sm:mb-2">For Sale</h2>
-                    <p className="text-[#686f4b] font-medium text-xs sm:text-sm lg:text-base">Premium properties for sale</p>
+                    <p className="text-[#686f4b] font-medium text-xs sm:text-sm lg:text-base">Check out our latest properties for sale</p>
                   </div>
                 </div>
                 <Link
-                className="group bg-[#686f4b] hover:bg-[#8c9280] text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-xl sm:rounded-2xl font-semibold hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 flex items-center gap-2 text-xs sm:text-sm lg:text-base w-full sm:w-auto justify-center"                  to={"/search?type=sale"}
+                  className="group bg-[#686f4b] hover:bg-[#8c9280] text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-xl sm:rounded-2xl font-semibold hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 flex items-center gap-2 text-xs sm:text-sm lg:text-base w-full sm:w-auto justify-center"
+                  to={"/search?type=sale"}
                 >
                   <span>View All Sales</span>
                   <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -273,20 +276,6 @@ export default function Home() {
           </div>
         )}
       </div>
-
-      {/* Tailwind Zoom Animation */}
-      <style>
-        {`
-          @keyframes zoom-slow {
-            0% { transform: scale(1.1); }
-            50% { transform: scale(1.15); }
-            100% { transform: scale(1.1); }
-          }
-          .animate-zoom-slow {
-            animation: zoom-slow 120s ease-in-out infinite;
-          }
-        `}
-      </style>
     </div>
   )
 }
