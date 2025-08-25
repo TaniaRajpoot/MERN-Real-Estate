@@ -4,9 +4,7 @@ export default function Contact({ listing }) {
   const [landLord, setLandLord] = useState(null);
   const [message, setMessage] = useState('');
 
-  const onChange = (e) => {
-    setMessage(e.target.value);
-  };
+  const onChange = (e) => setMessage(e.target.value);
 
   useEffect(() => {
     const fetchLandLord = async () => {
@@ -19,10 +17,16 @@ export default function Contact({ listing }) {
       }
     };
 
-    if (listing?.userRef) {
-      fetchLandLord();
-    }
+    if (listing?.userRef) fetchLandLord();
   }, [listing?.userRef]);
+
+  // Generate mailto link
+  const mailtoLink = () => {
+    if (!landLord?.email || !message) return '#';
+    const subject = encodeURIComponent(`Regarding ${listing.name}`);
+    const body = encodeURIComponent(message);
+    return `mailto:${landLord.email}?subject=${subject}&body=${body}`;
+  };
 
   return (
     <>
@@ -35,7 +39,6 @@ export default function Contact({ listing }) {
 
           <textarea
             name="message"
-            id="message"
             rows="3"
             value={message}
             onChange={onChange}
@@ -44,20 +47,14 @@ export default function Contact({ listing }) {
           ></textarea>
 
           <a
-            href={
-              message
-                ? `mailto:${landLord.email}?subject=${encodeURIComponent(
-                    `Regarding ${listing.name}`
-                  )}&body=${encodeURIComponent(message)}`
-                : '#'
-            }
+            href={mailtoLink()}
             onClick={(e) => {
               if (!message) {
                 e.preventDefault();
                 alert('Please enter a message before sending.');
               }
             }}
-            className="bg-slate-700 text-white text-center p-3 uppercase rounded-lg hover:opacity-95"
+            className="bg-[#424b1e] text-white/90 text-center p-3 uppercase rounded-lg hover:opacity-95"
           >
             Send Message
           </a>

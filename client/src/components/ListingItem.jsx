@@ -3,52 +3,61 @@ import { MdLocationOn } from 'react-icons/md';
 
 export default function ListingItem({ listing }) {
   return (
-    <div className='bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[330px]'>
+    <div className="bg-white/90 border border-[#b1b5a3]/40 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden rounded-2xl w-full sm:w-[340px]">
       <Link to={`/listing/${listing._id}`}>
-<img
-  src={
-    listing.imageUrls?.length > 0
-      ? listing.imageUrls[0]
-      : 'https://cms-assets.themuse.com/media/lead/_1200x630_crop_center-center_82_none/what-is-real-estate.png?mtime=1721326416'
-  }
-  onError={(e) => {
-    e.target.src =
-      'https://cms-assets.themuse.com/media/lead/_1200x630_crop_center-center_82_none/what-is-real-estate.png?mtime=1721326416';
-  }}
-  alt='listing cover'
-  className='h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300'
-/>
+        {/* Image */}
+        <img
+          src={
+            listing.imageUrls?.length > 0
+              ? listing.imageUrls[0]
+              : "https://cms-assets.themuse.com/media/lead/_1200x630_crop_center-center_82_none/what-is-real-estate.png?mtime=1721326416"
+          }
+          onError={(e) => {
+            e.target.src =
+              "https://cms-assets.themuse.com/media/lead/_1200x630_crop_center-center_82_none/what-is-real-estate.png?mtime=1721326416";
+          }}
+          alt="listing cover"
+          className="h-[280px] sm:h-[220px] w-full object-cover hover:scale-105 transition-transform duration-500 rounded-t-2xl"
+        />
 
-        <div className='p-3 flex flex-col gap-2 w-full'>
-          <p className='truncate text-lg font-semibold text-slate-700'>
+        {/* Info Section */}
+        <div className="p-4 flex flex-col gap-3">
+          {/* Title */}
+          <p className="truncate text-lg font-semibold text-[#424b1e]">
             {listing.name}
           </p>
-          <div className='flex items-center gap-1'>
-            <MdLocationOn className='h-4 w-4 text-green-700' />
-            <p className='text-sm text-gray-600 truncate w-full'>
-              {listing.address}
-            </p>
+
+          {/* Location */}
+          <div className="flex items-center gap-2">
+            <MdLocationOn className="h-5 w-5 text-[#686f4b]" />
+            <p className="text-sm text-gray-700 truncate">{listing.address}</p>
           </div>
-          <p className='text-sm text-gray-600 line-clamp-2'>
+
+          {/* Description */}
+          <p className="text-sm text-gray-600 line-clamp-2">
             {listing.description}
           </p>
-          <p className='text-slate-500 mt-2 font-semibold '>
+
+          {/* Price */}
+          <p className="text-lg font-semibold text-[#424b1e] mt-2">
             $
             {listing.offer
-              ? listing.discountPrice.toLocaleString('en-US')
-              : listing.regularPrice.toLocaleString('en-US')}
-            {listing.type === 'rent' && ' / month'}
+              ? listing.discountPrice.toLocaleString("en-US")
+              : listing.regularPrice.toLocaleString("en-US")}
+            {listing.type === "rent" && " / month"}
           </p>
-          <div className='text-slate-700 flex gap-4'>
-            <div className='font-bold text-xs'>
+
+          {/* Beds & Baths */}
+          <div className="flex gap-6 text-[#686f4b] font-medium text-sm">
+            <div>
               {listing.bedrooms > 1
-                ? `${listing.bedrooms} beds `
-                : `${listing.bedrooms} bed `}
+                ? `${listing.bedrooms} Beds`
+                : `${listing.bedrooms} Bed`}
             </div>
-            <div className='font-bold text-xs'>
+            <div>
               {listing.bathrooms > 1
-                ? `${listing.bathrooms} baths `
-                : `${listing.bathrooms} bath `}
+                ? `${listing.bathrooms} Baths`
+                : `${listing.bathrooms} Bath`}
             </div>
           </div>
         </div>
