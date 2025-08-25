@@ -131,7 +131,7 @@ export default function Search() {
           <h2 className="text-xl sm:text-2xl font-bold text-[#424b1e] mb-2">Search Filters</h2>
           <div className="w-16 h-1 bg-[#686f4b] rounded-full"></div>
         </div>
-//added 
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
           <div className="flex flex-col gap-2">
             <label className="font-semibold text-[#424b1e] text-lg">Search Term:</label>
@@ -232,7 +232,7 @@ export default function Search() {
             </select>
           </div>
 
-          <button className="bg-[#686f4b] text-white p-2.5 rounded-lg hover:bg-[#424b1e] transition-colors duration-300 font-semibold shadow-lg text-sm">
+          <button className="bg-[#686f4b] text-white p-4 rounded-lg hover:bg-[#424b1e] transition-colors duration-300 font-semibold shadow-lg text-sm">
             Search Properties
           </button>
         </form>
