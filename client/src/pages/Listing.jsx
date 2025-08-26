@@ -50,9 +50,47 @@ export default function Listing() {
     fetchListing();
   }, [params.listingId]);
 
-  if (loading) return <p className="text-center my-7 text-2xl">Loading...</p>;
-  if (error)
-    return <p className="text-center my-7 text-2xl">Something went wrong!</p>;
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen px-6">
+        <div className="flex flex-col items-center max-w-md mx-auto text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#424b1e] border-t-transparent mb-6"></div>
+          <h2 className="text-3xl font-bold text-[#424b1e] mb-2">
+            Loading Property
+          </h2>
+          <p className="text-[#686f4b] text-lg">
+            Please wait while we fetch the property details...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen px-6">
+        <div className="flex flex-col items-center max-w-md mx-auto text-center bg-red-50 p-8 rounded-lg border border-red-200">
+          <div className="text-red-500 text-6xl mb-6">🏠</div>
+          <h2 className="text-3xl font-bold text-red-600 mb-2">
+            Property Not Found
+          </h2>
+          <p className="text-red-500 text-lg mb-4">
+            We couldn't load this property listing.
+          </p>
+          <p className="text-gray-600 mb-6">
+            The property may have been removed or there might be a connection
+            issue.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-[#424b1e] text-white px-6 py-3 rounded-lg hover:bg-[#2f380f] transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="flex flex-col lg:flex-row max-w-7xl mx-auto my-12 gap-8 px-6">
