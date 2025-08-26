@@ -77,9 +77,12 @@ export default function About() {
               >
                 Browse Properties
               </Link>
-              <button className="bg-[#9ea38c] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#868c6f] transition-colors shadow-lg transform hover:scale-105">
-                Contact Us
-              </button>
+             <a
+  href="mailto:info@tanivaestate.com"
+  className="bg-[#9ea38c] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#868c6f] transition-colors shadow-lg transform hover:scale-105 inline-block"
+>
+  Contact Us
+</a>
             </div>
           </div>
         </div>

@@ -1,5 +1,4 @@
 import express from "express";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoute from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
@@ -17,10 +16,10 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://taniva.vercel.app",
-      "https://abc-project-fronte.vercel.app",
+      "https://prescripto-booking-system.vercel.app",
+      "https://prescripto-booking-system-admin.vercel.app",
     ],
-    credentials: true, // if you use cookies, otherwise can be false
+    credentials: true, 
   })
 );
 

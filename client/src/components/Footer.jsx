@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom"
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa"
+import { Link } from "react-router-dom";
+import { FaFacebook, FaInstagram, FaLinkedin, FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#d7d9d0] text-[#424b1e] mt-16">
-      <div className="max-w-6xl mx-auto px-4 py-12">
+    <footer className="bg-gradient-to-r from-[#d7d9d0] to-[#cdd0c4] text-[#424b1e]">
+      <div className="max-w-6xl mx-auto px-4 py-10 sm:py-12 lg:py-16">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
@@ -18,16 +18,13 @@ export default function Footer() {
               service and expert guidance.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-[#868c6f] hover:text-[#424b1e] transition-colors duration-300">
+              <a href="https://www.facebook.com/profile.php?id=61563528295281" className="text-[#868c6f] hover:text-[#424b1e] transition-colors duration-300">
                 <FaFacebook size={20} />
               </a>
-              <a href="#" className="text-[#868c6f] hover:text-[#424b1e] transition-colors duration-300">
-                <FaTwitter size={20} />
-              </a>
-              <a href="#" className="text-[#868c6f] hover:text-[#424b1e] transition-colors duration-300">
+              <a href="https://www.instagram.com/tania____rajpoot___/" className="text-[#868c6f] hover:text-[#424b1e] transition-colors duration-300">
                 <FaInstagram size={20} />
               </a>
-              <a href="#" className="text-[#868c6f] hover:text-[#424b1e] transition-colors duration-300">
+              <a href="https://www.linkedin.com/in/tania-ashraf-/" className="text-[#868c6f] hover:text-[#424b1e] transition-colors duration-300">
                 <FaLinkedin size={20} />
               </a>
             </div>
@@ -37,26 +34,10 @@ export default function Footer() {
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-[#424b1e]">Quick Links</h4>
             <ul className="space-y-2">
-              <li>
-                <Link to="/" className="text-[#686f4b] hover:text-[#424b1e] transition-colors duration-300">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-[#686f4b] hover:text-[#424b1e] transition-colors duration-300">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/search" className="text-[#686f4b] hover:text-[#424b1e] transition-colors duration-300">
-                  Properties
-                </Link>
-              </li>
-              <li>
-                <Link to="/profile" className="text-[#686f4b] hover:text-[#424b1e] transition-colors duration-300">
-                  My Account
-                </Link>
-              </li>
+              <li><Link to="/" className="text-[#686f4b] hover:text-[#424b1e] transition-colors duration-300">Home</Link></li>
+              <li><Link to="/about" className="text-[#686f4b] hover:text-[#424b1e] transition-colors duration-300">About Us</Link></li>
+              <li><Link to="/search" className="text-[#686f4b] hover:text-[#424b1e] transition-colors duration-300">Properties</Link></li>
+              <li><Link to="/profile" className="text-[#686f4b] hover:text-[#424b1e] transition-colors duration-300">My Account</Link></li>
             </ul>
           </div>
 
@@ -92,18 +73,14 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-[#b1b5a3] mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-[#b1b5a3] mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-[#868c6f] text-sm">© 2024 Taniva Estate. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="/privacy" className="text-[#868c6f] hover:text-[#424b1e] text-sm transition-colors duration-300">
-              Privacy Policy
-            </Link>
-            <Link to="/terms" className="text-[#868c6f] hover:text-[#424b1e] text-sm transition-colors duration-300">
-              Terms of Service
-            </Link>
+            <Link to="/privacy" className="text-[#868c6f] hover:text-[#424b1e] text-sm transition-colors duration-300">Privacy Policy</Link>
+            <Link to="/terms" className="text-[#868c6f] hover:text-[#424b1e] text-sm transition-colors duration-300">Terms of Service</Link>
           </div>
         </div>
       </div>
     </footer>
-  )
+  );
 }
