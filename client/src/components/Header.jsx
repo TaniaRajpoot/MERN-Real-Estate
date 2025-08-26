@@ -1,137 +1,86 @@
-"use client"
+import { Link } from "react-router-dom";
+import { FaFacebook, FaInstagram, FaLinkedin, FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 
-import { FaSearch, FaBars, FaTimes } from "react-icons/fa"
-import { Link, useNavigate } from "react-router-dom"
-import { useSelector } from "react-redux"
-import { useEffect, useState } from "react"
-import { useLocation } from "react-router-dom"
-
-export default function Header() {
-  const { currentUser } = useSelector((state) => state.user)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [menuOpen, setMenuOpen] = useState(false)
-  const location = useLocation()
-  const navigate = useNavigate()
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const urlParams = new URLSearchParams()
-    if (searchTerm) urlParams.set("searchTerm", searchTerm)
-    navigate(`/search?${urlParams.toString()}`)
-    setMenuOpen(false)
-  }
-
-  const handlePropertiesClick = () => {
-    const urlParams = new URLSearchParams()
-    urlParams.set("type", "all")
-    navigate(`/search?${urlParams.toString()}`)
-    setMenuOpen(false)
-  }
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search)
-    const searchTermFromUrl = urlParams.get("searchTerm")
-    if (searchTermFromUrl) setSearchTerm(searchTermFromUrl)
-  }, [location.search])
-
+export default function Footer() {
   return (
-    <header className="bg-gradient-to-r from-[#d7d9d0] via-[#cdd0c4] to-[#c1c4b5] shadow-lg border-b border-[#b1b5a3]/30 sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
-      <div className="flex justify-between items-center max-w-7xl mx-auto px-3 sm:px-4 py-2 sm:py-3">
-        
-        {/* Logo */}
-        <Link to="/" className="group flex-shrink-0">
-          <h1 className="font-bold text-xl sm:text-2xl transition-all duration-500 ease-out group-hover:scale-105 group-hover:drop-shadow-lg">
-            <span className="text-[#424b1e]">Taniva </span>
-            <span className="text-[#686f4b]">Estate</span>
-          </h1>
-        </Link>
+    <footer className="bg-gradient-to-t from-[#d7d9d0] to-[#cdd0c4] text-[#424b1e]">
+      <div className="max-w-6xl mx-auto px-4 py-10 sm:py-12 lg:py-16">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Company Info */}
+          <div className="space-y-4">
+            <h3 className="text-2xl font-bold">
+              <span className="text-[#424b1e]">Taniva </span>
+              <span className="text-[#686f4b]">Estate</span>
+            </h3>
+            <p className="text-[#686f4b] leading-relaxed">
+              Your trusted partner in finding the perfect home. We make real estate dreams come true with personalized
+              service and expert guidance.
+            </p>
+            <div className="flex space-x-4">
+              <a href="https://www.facebook.com/profile.php?id=61563528295281" className="text-[#868c6f] hover:text-[#424b1e] transition-colors duration-300">
+                <FaFacebook size={20} />
+              </a>
+              <a href="https://www.instagram.com/tania____rajpoot___/" className="text-[#868c6f] hover:text-[#424b1e] transition-colors duration-300">
+                <FaInstagram size={20} />
+              </a>
+              <a href="https://www.linkedin.com/in/tania-ashraf-/" className="text-[#868c6f] hover:text-[#424b1e] transition-colors duration-300">
+                <FaLinkedin size={20} />
+              </a>
+            </div>
+          </div>
 
-        {/* Search Form (hidden on very small screens) */}
-        <form
-          onSubmit={handleSubmit}
-          className="hidden sm:flex bg-white/95 backdrop-blur-lg p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl items-center shadow-lg border border-[#b1b5a3]/50 transition-all duration-500 ease-out hover:bg-white group mx-2 sm:mx-4"
-        >
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent focus:outline-none w-28 sm:w-40 md:w-56 lg:w-72 text-[#2f380f] placeholder-[#686f4b]/70 font-medium px-1 sm:px-2 text-sm sm:text-base"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button type="submit" className="ml-1 p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl hover:bg-[#b1b5a3]/20 transition-all duration-300">
-            <FaSearch className="text-[#686f4b]" />
-          </button>
-        </form>
+          {/* Quick Links */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-[#424b1e]">Quick Links</h4>
+            <ul className="space-y-2">
+              <li><Link to="/" className="text-[#686f4b] hover:text-[#424b1e] transition-colors duration-300">Home</Link></li>
+              <li><Link to="/about" className="text-[#686f4b] hover:text-[#424b1e] transition-colors duration-300">About Us</Link></li>
+              <li><Link to="/search" className="text-[#686f4b] hover:text-[#424b1e] transition-colors duration-300">Properties</Link></li>
+              <li><Link to="/profile" className="text-[#686f4b] hover:text-[#424b1e] transition-colors duration-300">My Account</Link></li>
+            </ul>
+          </div>
 
-        {/* Desktop Navigation */}
-        <ul className="hidden md:flex gap-4 lg:gap-8 items-center">
-          <Link to="/" className="group">
-            <li className="text-[#424b1e] hover:text-[#2f380f] transition-colors text-sm lg:text-base">Home</li>
-          </Link>
-          <Link to="/about" className="group">
-            <li className="text-[#424b1e] hover:text-[#2f380f] transition-colors text-sm lg:text-base">About</li>
-          </Link>
-          <li
-            onClick={handlePropertiesClick}
-            className="cursor-pointer text-[#424b1e] hover:text-[#2f380f] text-sm lg:text-base"
-          >
-            Properties
-          </li>
-          <Link to={currentUser ? "/profile" : "/sign-in"} className="group">
-            {currentUser ? (
-              <img
-                src={
-                  currentUser?.avatar?.trim()
-                    ? currentUser.avatar
-                    : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                }
-                onError={(e) => { e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png" }}
-                alt="profile"
-                className="w-9 h-9 lg:w-11 lg:h-11 rounded-full object-cover border-2 border-[#424b1e]/80 hover:border-[#2f380f] transition-all"
-              />
-            ) : (
-              <li className="text-[#424b1e] hover:text-[#2f380f] text-sm lg:text-base">Sign in</li>
-            )}
-          </Link>
-        </ul>
+          {/* Services */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-[#424b1e]">Services</h4>
+            <ul className="space-y-2">
+              <li className="text-[#686f4b]">Property Sales</li>
+              <li className="text-[#686f4b]">Property Rentals</li>
+              <li className="text-[#686f4b]">Property Management</li>
+              <li className="text-[#686f4b]">Investment Consulting</li>
+            </ul>
+          </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden p-2 rounded-lg hover:bg-[#b1b5a3]/30 transition-all"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          {menuOpen ? <FaTimes className="text-xl text-[#424b1e]" /> : <FaBars className="text-xl text-[#424b1e]" />}
-        </button>
-      </div>
-
-      {/* Mobile Dropdown Menu */}
-      {menuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-lg shadow-lg border-t border-[#b1b5a3]/40">
-          {/* Search visible on mobile here */}
-          <form onSubmit={handleSubmit} className="flex items-center gap-2 p-3 border-b border-[#b1b5a3]/30">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="flex-1 bg-transparent focus:outline-none text-[#2f380f] placeholder-[#686f4b]/70"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <button type="submit">
-              <FaSearch className="text-[#686f4b]" />
-            </button>
-          </form>
-
-          {/* Links */}
-          <ul className="flex flex-col gap-4 p-4">
-            <Link to="/" onClick={() => setMenuOpen(false)}><li>Home</li></Link>
-            <Link to="/about" onClick={() => setMenuOpen(false)}><li>About</li></Link>
-            <li onClick={handlePropertiesClick}>Properties</li>
-            <Link to={currentUser ? "/profile" : "/sign-in"} onClick={() => setMenuOpen(false)}>
-              {currentUser ? "Profile" : "Sign in"}
-            </Link>
-          </ul>
+          {/* Contact Info */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-[#424b1e]">Contact Us</h4>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <FaMapMarkerAlt className="text-[#868c6f]" />
+                <span className="text-[#686f4b]">123 Real Estate St, City, State 12345</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <FaPhone className="text-[#868c6f]" />
+                <span className="text-[#686f4b]">+1 (555) 123-4567</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <FaEnvelope className="text-[#868c6f]" />
+                <span className="text-[#686f4b]">info@tanivaestate.com</span>
+              </div>
+            </div>
+          </div>
         </div>
-      )}
-    </header>
-  )
+
+        {/* Bottom Bar */}
+        <div className="border-t border-[#b1b5a3] mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-[#868c6f] text-sm">© 2024 Taniva Estate. All rights reserved.</p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <Link to="/privacy" className="text-[#868c6f] hover:text-[#424b1e] text-sm transition-colors duration-300">Privacy Policy</Link>
+            <Link to="/terms" className="text-[#868c6f] hover:text-[#424b1e] text-sm transition-colors duration-300">Terms of Service</Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 }
