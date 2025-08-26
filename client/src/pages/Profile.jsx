@@ -3,6 +3,7 @@
 import { useSelector, useDispatch } from "react-redux"
 import { useRef, useState, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
+import axios from "axios"
 import {
   deleteUserFailure,
   deleteUserStart,
@@ -42,6 +43,7 @@ export default function Profile() {
     const userRef = ref(db, "users/" + userId)
     try {
       await update(userRef, { avatar: avatarUrl })
+      console.log("Avatar URL saved to Firebase Realtime Database")
     } catch (err) {
       console.error("Firebase update error:", err)
     }
@@ -57,7 +59,7 @@ export default function Profile() {
 
     if (!file.type.startsWith("image/")) {
       setUploading(false)
-      setUploadError("Please upload a valid image file (JPG, PNG, GIF, WebP)")
+      setUploadError("Please upload a valid image file (JPG, PNG, JPEG, etc.)")
       return
     }
 
@@ -67,47 +69,67 @@ export default function Profile() {
       return
     }
 
+    const cloudinaryFormData = new FormData()
+    cloudinaryFormData.append("file", file)
+    cloudinaryFormData.append("upload_preset", "unsigned_preset") // Replace with your actual preset
+
     try {
-      console.log("[v0] Starting mock image upload...")
-      console.log("[v0] File details:", { name: file.name, size: file.size, type: file.type })
+      console.log("Starting image upload to Cloudinary...")
+      console.log("File details:", { name: file.name, size: file.size, type: file.type })
 
-      // Simulate upload progress
-      const progressInterval = setInterval(() => {
-        setUploadProgress((prev) => {
-          if (prev >= 90) {
-            clearInterval(progressInterval)
-            return 90
-          }
-          return prev + 10
-        })
-      }, 100)
+      const res = await axios.post(
+        "https://api.cloudinary.com/v1_1/dpvjlm1wi/image/upload",
+        cloudinaryFormData,
+        {
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            )
+            setUploadProgress(percentCompleted)
+            console.log(`Upload progress: ${percentCompleted}%`)
+          },
+        }
+      )
 
-      // Create a local URL for the uploaded image
-      const imageUrl = URL.createObjectURL(file)
-
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      clearInterval(progressInterval)
-      setUploadProgress(100)
-
-      console.log("[v0] Mock upload completed, image URL:", imageUrl)
-
-      setAvatar(imageUrl)
+      const imageUrl = res.data.secure_url
+      console.log("Upload completed successfully! URL:", imageUrl)
+      
+      // Update local state
       dispatch(updateUserAvatar(imageUrl))
-      console.log("[v0] Redux state updated with new avatar")
+      setAvatar(imageUrl)
 
+      // Save to Firebase Realtime Database
       if (currentUser._id) {
-        console.log("[v0] Saving to Firebase...")
         await saveAvatarUrlToFirebase(currentUser._id, imageUrl)
-        console.log("[v0] Firebase update completed")
+      }
+
+      // Update via your API endpoint
+      try {
+        const apiRes = await fetch(`${import.meta.env.VITE_API_URL}/api/user/update/${currentUser._id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ avatar: imageUrl }),
+        })
+
+        if (apiRes.ok) {
+          console.log("API update completed successfully")
+        }
+      } catch (apiError) {
+        console.warn("API update failed, but Cloudinary upload successful:", apiError)
       }
 
       setUploadError("")
-      setTimeout(() => setUploadProgress(0), 3000)
-      console.log("[v0] Profile picture upload completed successfully")
+      
+      // Clear progress after 3 seconds
+      setTimeout(() => {
+        setUploadProgress(0)
+      }, 3000)
+
     } catch (error) {
-      console.error("[v0] Upload failed:", error)
+      console.error("Upload failed:", error)
       setUploadError("Upload failed. Please try again.")
       setAvatar(currentUser.avatar || "")
     } finally {
@@ -230,8 +252,9 @@ export default function Profile() {
   }
 
   const handleImageClick = () => {
-    if (!uploading && fileRef.current) {
-      console.log("[v0] Triggering file input click")
+    // Only allow photo change when editing is enabled
+    if (!uploading && fileRef.current && isEditing) {
+      console.log("Triggering file input click")
       fileRef.current.click()
     }
   }
@@ -261,22 +284,38 @@ export default function Profile() {
                   onClick={handleImageClick}
                   src={avatar || currentUser?.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                   onError={(e) => {
-                    console.log("[v0] Image load error, using fallback")
+                    console.log("Image load error, using fallback")
                     e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                   }}
                   alt="profile"
-                  className={`rounded-full h-32 w-32 object-cover border-4 border-[#9ea38c] shadow-lg group-hover:border-[#686f4b] transition-all duration-300 ${
-                    uploading ? "cursor-not-allowed opacity-70" : "cursor-pointer"
+                  className={`rounded-full h-32 w-32 object-cover border-4 border-[#9ea38c] shadow-lg transition-all duration-300 ${
+                    uploading || !isEditing 
+                      ? "cursor-not-allowed opacity-70" 
+                      : "cursor-pointer group-hover:border-[#686f4b]"
                   }`}
                 />
-                <div
-                  className="absolute inset-0 rounded-full bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
-                  onClick={handleImageClick}
-                >
-                  <span className="text-white font-semibold text-sm text-center px-2 pointer-events-none">
-                    {uploading ? `${uploadProgress}%` : "Change Photo"}
-                  </span>
-                </div>
+                {isEditing && !uploading && (
+                  <div
+                    className="absolute inset-0 rounded-full bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
+                    onClick={handleImageClick}
+                  >
+                    <span className="text-white font-semibold text-sm text-center px-2 pointer-events-none">
+                      Change Photo
+                    </span>
+                  </div>
+                )}
+                {uploading && (
+                  <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center">
+                    <span className="text-white font-semibold text-sm">{uploadProgress}%</span>
+                  </div>
+                )}
+                {!isEditing && (
+                  <div className="absolute inset-0 rounded-full flex items-center justify-center pointer-events-none">
+                    <div className="bg-black/60 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                      Enable edit mode to change photo
+                    </div>
+                  </div>
+                )}
               </div>
 
               {uploading && (
@@ -287,14 +326,14 @@ export default function Profile() {
                       style={{ width: `${uploadProgress}%` }}
                     ></div>
                   </div>
-                  <p className="text-center text-[#424b1e] font-semibold mt-2">Uploading... {uploadProgress}%</p>
+                  <p className="text-center text-[#424b1e] font-semibold mt-2">Uploading to Cloudinary... {uploadProgress}%</p>
                 </div>
               )}
 
               {!uploading && uploadProgress > 0 && !uploadError && (
                 <div className="mt-4 text-center">
                   <p className="text-green-600 font-semibold bg-green-100 px-4 py-2 rounded-lg border border-green-300">
-                    ✓ Profile picture updated successfully!
+                    ✓ Profile picture uploaded and saved successfully!
                   </p>
                 </div>
               )}
@@ -304,12 +343,15 @@ export default function Profile() {
                   <p className="text-red-600 font-semibold bg-red-100 px-4 py-2 rounded-lg border border-red-300">
                     ✗ {uploadError}
                   </p>
-                  <button
-                    onClick={handleImageClick}
-                    className="mt-2 text-sm text-[#686f4b] hover:text-[#424b1e] underline"
-                  >
-                    Try uploading again
-                  </button>
+                  {isEditing && (
+                    <button
+                      type="button"
+                      onClick={handleImageClick}
+                      className="mt-2 text-sm text-[#686f4b] hover:text-[#424b1e] underline"
+                    >
+                      Try uploading again
+                    </button>
+                  )}
                 </div>
               )}
             </div>

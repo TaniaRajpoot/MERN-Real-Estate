@@ -17,10 +17,10 @@ export default function SignUp() {
       [e.target.id]: e.target.value,
     })
   }
-  console.log(formData)
+ 
 
   const handleSubmit = async (e) => {
-    e.preventDefault() // ✅ Fix typo here
+    e.preventDefault() 
     setLoading(true)
     console.log(true)
 

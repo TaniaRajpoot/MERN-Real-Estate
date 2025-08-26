@@ -34,7 +34,7 @@ export default function SignIn() {
       })
 
       const data = await res.json()
-      console.log(" Backend Response:", data)
+     
 
       if (data.success === false) {
         dispatch(signInFaliure(data.message))
