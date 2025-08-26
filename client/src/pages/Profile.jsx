@@ -326,14 +326,14 @@ export default function Profile() {
                       style={{ width: `${uploadProgress}%` }}
                     ></div>
                   </div>
-                  <p className="text-center text-[#424b1e] font-semibold mt-2">Uploading to Cloudinary... {uploadProgress}%</p>
+                  <p className="text-center text-[#424b1e] font-semibold mt-2">Uploading... {uploadProgress}%</p>
                 </div>
               )}
 
               {!uploading && uploadProgress > 0 && !uploadError && (
                 <div className="mt-4 text-center">
                   <p className="text-green-600 font-semibold bg-green-100 px-4 py-2 rounded-lg border border-green-300">
-                    ✓ Profile picture uploaded and saved successfully!
+                    Profile picture uploaded 
                   </p>
                 </div>
               )}
@@ -341,7 +341,7 @@ export default function Profile() {
               {uploadError && (
                 <div className="mt-4 text-center max-w-md">
                   <p className="text-red-600 font-semibold bg-red-100 px-4 py-2 rounded-lg border border-red-300">
-                    ✗ {uploadError}
+                    {uploadError}
                   </p>
                   {isEditing && (
                     <button
