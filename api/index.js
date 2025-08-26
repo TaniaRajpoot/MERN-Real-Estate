@@ -12,14 +12,15 @@ connectDatabase();
 
 const app = express();
 
+
 app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://prescripto-booking-system.vercel.app",
-      "https://prescripto-booking-system-admin.vercel.app",
+      "https://taniva.vercel.app",
+      "https://abc-project-fronte.vercel.app",
     ],
-    credentials: true, 
+    credentials: true, // if you use cookies, otherwise can be false
   })
 );
 
